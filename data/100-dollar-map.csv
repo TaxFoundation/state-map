@@ -1,0 +1,52 @@
+id,abbr,state,value
+1,AL,Alabama,114.03
+2,AK,Alaska,94.34
+4,AZ,Arizona,102.99
+5,AR,Arkansas,114.29
+6,CA,California,89.05
+8,CO,Colorado,97.85
+9,CT,Connecticut,92.17
+10,DE,Delaware,98.62
+11,DC,District of Columbia,84.96
+12,FL,Florida,101.21
+13,GA,Georgia,108.81
+15,HI,Hawaii,86.06
+16,ID,Idaho,107.76
+17,IL,Illinois,99.01
+18,IN,Indiana,109.41
+19,IA,Iowa,110.74
+20,KS,Kansas,110.13
+21,KY,Kentucky,112.23
+22,LA,Louisiana,109.65
+23,ME,Maine,102.35
+24,MD,Maryland,90.17
+25,MA,Massachusetts,93.2
+26,MI,Michigan,106.16
+27,MN,Minnesota,102.46
+28,MS,Mississippi,115.21
+29,MO,Missouri,112.11
+30,MT,Montana,105.93
+31,NE,Nebraska,110.5
+32,NV,Nevada,101.83
+33,NH,New Hampshire,94.43
+34,NJ,New Jersey,87.34
+35,NM,New Mexico,105.26
+36,NY,New York,86.73
+37,NC,North Carolina,109.05
+38,ND,North Dakota,109.41
+39,OH,Ohio,111.61
+40,OK,Oklahoma,111.23
+41,OR,Oregon,101.32
+42,PA,Pennsylvania,101.42
+44,RI,Rhode Island,101.94
+45,SC,South Carolina,110.5
+46,SD,South Dakota,114.16
+47,TN,Tennessee,110.38
+48,TX,Texas,103.41
+49,UT,Utah,102.88
+50,VT,Vermont,99.8
+51,VA,Virginia,97.09
+53,WA,Washington,96.9
+54,WV,West Virginia,113.12
+55,WI,Wisconsin,107.64
+56,WY,Wyoming,104.38
