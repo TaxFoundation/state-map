@@ -1,3 +1,5 @@
+'use strict'
+
 var width = 960,
     height = 720,
 
@@ -16,8 +18,7 @@ var colors = [],
     borderColor = '#fff', //Color of borders between states
     noDataColor = '#ddd', //Color applied when no data matches an element
     lowBaseColor = '#E71663', //Color applied at the end of the scale with the lowest values
-    highBaseColor = '#FBD635',
-     //Color applied at the end of the scale with the highest values
+    highBaseColor = '#FBD635', //Color applied at the end of the scale with the highest values
     scaleColor = d3.scale.linear()
         .domain([0, steps - 1])
         .range([lowBaseColor, highBaseColor])
@@ -71,28 +72,28 @@ var dataPath = 'data/100-dollar-map.csv',
 var smallStateRects = [{ id: 9 }, { id: 10 }, { id: 11 }, { id: 24 }, { id: 25 }, { id: 33 }, { id: 34 }, { id: 44 }, { id: 50 }];
 
 var labelOffsets = { //To preserve position with changes to width and height, set all values to percentage * width or height
-  2:  { x: 105, y: 490 },
-  9:  { x: 910, y: 310, small: true },
-  10: { x: 910, y: 390, small: true },
-  11: { x: 910, y: 470, small: true },
-  12: { x: 775, y: 500 },
-  13: { x: 725, y: 405 },
-  15: { x: 275, y: 560 },
-  22: { x: 555, y: 465 },
-  23: { x: 905, y: 70 },
-  24: { x: 910, y: 430, small: true },
-  25: { x: 910, y: 230, small: true },
-  26: { x: 670, y: 170 },
-  33: { x: 805, y: 50, small: true },
-  34: { x: 910, y: 350, small: true },
-  36: { x: 825, y: 155 },
-  37: { x: 800, y: 330 },
-  44: { x: 910, y: 270, small: true },
-  45: { x: 770, y: 375 },
-  50: { x: 725, y: 50, small: true },
-  51: { x: 800, y: 280 },
-  54: { x: 750, y: 270 },
-  55: { x: 590, y: 155 }
+  2:  { x: 0, y: 0 },
+  9:  { x: 0, y: 0, rectX: 910, rectY: 310 },
+  10: { x: 0, y: 0, rectX: 910, rectY: 390 },
+  11: { x: 0, y: 0, rectX: 910, rectY: 470 },
+  12: { x: 0, y: 0 },
+  13: { x: 0, y: 0 },
+  15: { x: 0, y: 0 },
+  22: { x: 0, y: 0 },
+  23: { x: 0, y: 0 },
+  24: { x: 0, y: 0, rectX: 910, rectY: 430 },
+  25: { x: 0, y: 0, rectX: 910, rectY: 230 },
+  26: { x: 0, y: 0 },
+  33: { x: 0, y: 0, rectX: 805, rectY: 50 },
+  34: { x: 0, y: 0, rectX: 910, rectY: 350 },
+  36: { x: 0, y: 0 },
+  37: { x: 0, y: 0 },
+  44: { x: 0, y: 0, rectX: 910, rectY: 270 },
+  45: { x: 0, y: 0 },
+  50: { x: 0, y: 0, rectX: 725, rectY: 50 },
+  51: { x: 0, y: 0 },
+  54: { x: 0, y: 0 },
+  55: { x: 0, y: 0 }
 };
 
 queue()
@@ -119,10 +120,10 @@ function ready(error, us, data) {
       .attr('width', function() {return scaleOffset(28, 'width');})
       .attr('height', function() {return scaleOffset(28, 'height');})
         .attr('x', function(d) {
-          return scaleOffset((labelOffsets[d.id].x + 10), 'width');
+          return scaleOffset((labelOffsets[d.id].rectX + 10), 'width');
         })
         .attr('y', function(d) {
-          return scaleOffset((labelOffsets[d.id].y - 12), 'height');
+          return scaleOffset((labelOffsets[d.id].rectY - 12), 'height');
         })
         .attr('fill', noDataColor)
         .attr('class', function(d) {return 'state' + d.id;});
@@ -132,58 +133,13 @@ function ready(error, us, data) {
       .data(topojson.feature(us, us.objects.states).features)
       .enter().append('g');
 
-  labelGroups
-      .append('text')
-      .attr('class', 'state-name')
-      .attr('id', function(d) {return 'statename' + d.id;})
-            .attr('text-anchor', function(d) {
-              if (labelOffsets[d.id] && labelOffsets[d.id].small === true) {
-                return 'end';
-              } else {
-                return 'middle';
-              }
-            })
-            .attr('transform', function(d) {
-              if (labelOffsets[d.id]) {
-                return 'translate(' + scaleOffset(labelOffsets[d.id].x, 'width')
-                + ','
-                + scaleOffset(labelOffsets[d.id].y, 'height') + ')';
-              } else if (d.id !== 72 && d.id !== 78) {
-                var centroid = path.centroid(d),
-                    x = centroid[0],
-                    y = centroid[1];
-                return 'translate(' + (x) + ',' + (y) + ')';
-              }
-            });
-
-  labelGroups
-      .append('text')
-      .attr('class', 'state-value')
-      .attr('id', function(d) {return 'stateval' + d.id;})
-            .attr('text-anchor', function(d) {
-              if (labelOffsets[d.id] && labelOffsets[d.id].small === true) {
-                return 'end';
-              } else {
-                return 'middle';
-              }
-            })
-            .attr('transform', function(d) {
-              if (labelOffsets[d.id]) {
-                return 'translate(' + scaleOffset(labelOffsets[d.id].x, 'width')
-                + ','
-                + scaleOffset(labelOffsets[d.id].y + 14, 'height') + ')';
-              } else if (d.id !== 72 && d.id !== 78) {
-                var centroid = path.centroid(d),
-                    x = centroid[0],
-                    y = centroid[1];
-                return 'translate(' + (x) + ',' + (y + 14) + ')';
-              }
-            });
+  textLabel(labelGroups, 'name', 0);
+  textLabel(labelGroups, 'value', 14);
 
   data.forEach(function(d) {
     d3.selectAll('.state' + d.id)
         .style('fill', mapColor(parseFloat(d[observation])));
-    d3.select('#stateval' + d.id)
+    d3.select('#statevalue' + d.id)
         .html(legendDataType(d[observation]))
     d3.select('#statename' + d.id)
         .html(d.abbr)
@@ -254,4 +210,32 @@ function scaleOffset(offset, type) {
     case 'height':
       return (offset / 720) * height;
   }
+}
+
+function textLabel(labelGroup, className, yOffset) {
+  labelGroup
+    .append('text')
+    .attr('class', 'state-' + className)
+    .attr('id', function(d) {return 'state' + className + d.id;})
+      .attr('text-anchor', function(d) {
+        if (labelOffsets[d.id] && labelOffsets[d.id].rectX) {
+          return 'end';
+        } else {
+          return 'middle';
+        }
+      })
+      .attr('transform', function(d) {
+        var centroid = path.centroid(d);
+        if (labelOffsets[d.id] && labelOffsets[d.id].rectX) {
+          return 'translate(' + labelOffsets[d.id].rectX + ',' + (labelOffsets[d.id].rectY + yOffset) + ')';
+        } else if (labelOffsets[d.id]) {
+          var x = Math.floor(centroid[0]) + scaleOffset(labelOffsets[d.id].x, 'width'),
+              y = Math.floor(centroid[1]) + scaleOffset(labelOffsets[d.id].y, 'height');
+          return 'translate(' + x + ',' + (y + yOffset) + ')';
+        } else if (d.id !== 72 && d.id !== 78) {
+          var x = Math.floor(centroid[0]),
+              y = Math.floor(centroid[1]);
+          return 'translate(' + x + ',' + (y + yOffset) + ')';
+        }
+      });
 }
