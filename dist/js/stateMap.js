@@ -9,6 +9,7 @@ var width = 960,
 
 // Define increments for data scale
 var min = 84, //Floor for the first step
+    mid = 100,
     max = 116, //Anything above the max is the final step
     steps = 8, //Final step represents anything at or above max
     increment = (max - min) / (steps - 1);
@@ -17,8 +18,9 @@ var min = 84, //Floor for the first step
 var colors = [],
     borderColor = '#fff', //Color of borders between states
     noDataColor = '#ddd', //Color applied when no data matches an element
-    lowBaseColor = '#E71663', //Color applied at the end of the scale with the lowest values
-    highBaseColor = '#FBD635', //Color applied at the end of the scale with the highest values
+    lowBaseColor = '#FFCE00', //Color applied at the end of the scale with the lowest values
+    midBaseColor = '#FFAA93',
+    highBaseColor = '#FF0068', //Color applied at the end of the scale with the highest values
     scaleColor = d3.scale.linear()
         .domain([0, steps - 1])
         .range([lowBaseColor, highBaseColor])
@@ -37,7 +39,7 @@ var tooltip = d3.select('body').append('div')
 
     dataFormat = {
       percentage: d3.format('%'),
-      tens: d3.format('$,.4r'),
+      tens: d3.format('$,.2f'),
       hundreds: d3.format('$,.5r'),
       thousands: d3.format('$s')
     };
@@ -49,9 +51,9 @@ var projection = d3.geo.albersUsa()
 var path = d3.geo.path()
     .projection(projection);
 
-var mapColor = d3.scale.quantize()
-    .domain([min, max + increment]) //Uses max+increment to make sure cutoffs between steps are correct
-    .range(colors);
+var mapColor = d3.scale.linear()
+    .domain([min, mid, max])
+    .range([lowBaseColor, midBaseColor, highBaseColor]);
 
 var map = svg.append('g')
     .attr('class', 'counties');
