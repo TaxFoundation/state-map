@@ -41,7 +41,7 @@ var tooltip = d3.select('body').append('div')
       percentage: d3.format('%'),
       tens: d3.format('$,.2f'),
       hundreds: d3.format('$,.5r'),
-      thousands: d3.format('$s')
+      thousands: d3.format('$s'),
     };
 
 var projection = d3.geo.albersUsa()
@@ -74,28 +74,30 @@ var dataPath = 'data/100-dollar-map.csv',
 var smallStateRects = [{ id: 9 }, { id: 10 }, { id: 11 }, { id: 24 }, { id: 25 }, { id: 33 }, { id: 34 }, { id: 44 }, { id: 50 }];
 
 var labelOffsets = { //To preserve position with changes to width and height, set all values to percentage * width or height
-  2:  { x: 0, y: 0 },
+  2:  { x: 5, y: -10 },
   9:  { x: 0, y: 0, rectX: 910, rectY: 310 },
   10: { x: 0, y: 0, rectX: 910, rectY: 390 },
   11: { x: 0, y: 0, rectX: 910, rectY: 470 },
-  12: { x: 0, y: 0 },
-  13: { x: 0, y: 0 },
+  12: { x: 15, y: 0 },
+  13: { x: 5, y: 5 },
   15: { x: 0, y: 0 },
+  17: { x: -5, y: -10 },
   22: { x: 0, y: 0 },
-  23: { x: 0, y: 0 },
+  23: { x: 0, y: -5 },
   24: { x: 0, y: 0, rectX: 910, rectY: 430 },
   25: { x: 0, y: 0, rectX: 910, rectY: 230 },
-  26: { x: 0, y: 0 },
+  26: { x: 15, y: 22 },
+  27: { x: 0, y: -20 },
   33: { x: 0, y: 0, rectX: 805, rectY: 50 },
   34: { x: 0, y: 0, rectX: 910, rectY: 350 },
   36: { x: 0, y: 0 },
   37: { x: 0, y: 0 },
   44: { x: 0, y: 0, rectX: 910, rectY: 270 },
   45: { x: 0, y: 0 },
-  50: { x: 0, y: 0, rectX: 725, rectY: 50 },
+  50: { x: 0, y: 0, rectX: 705, rectY: 50 },
   51: { x: 0, y: 0 },
   54: { x: 0, y: 0 },
-  55: { x: 0, y: 0 }
+  55: { x: -3, y: -10 },
 };
 
 queue()
@@ -110,7 +112,7 @@ function ready(error, us, data) {
   map.selectAll('path')
       .data(topojson.feature(us, us.objects.states).features)
   .enter().append('path')
-      .attr('class', function(d) {return 'state' + d.id;})
+      .attr('class', function (d) {return 'state' + d.id;})
       .attr('d', path)
       .attr('fill', noDataColor)
       .attr('stroke', '#fff')
@@ -119,16 +121,16 @@ function ready(error, us, data) {
   map.selectAll('rect')
       .data(smallStateRects)
   .enter().append('rect')
-      .attr('width', function() {return scaleOffset(28, 'width');})
-      .attr('height', function() {return scaleOffset(28, 'height');})
-        .attr('x', function(d) {
+      .attr('width', function () {return scaleOffset(28, 'width');})
+      .attr('height', function () {return scaleOffset(28, 'height');})
+        .attr('x', function (d) {
           return scaleOffset((labelOffsets[d.id].rectX + 10), 'width');
         })
-        .attr('y', function(d) {
+        .attr('y', function (d) {
           return scaleOffset((labelOffsets[d.id].rectY - 12), 'height');
         })
         .attr('fill', noDataColor)
-        .attr('class', function(d) {return 'state' + d.id;});
+        .attr('class', function (d) {return 'state' + d.id;});
 
   //create group for labels
   var labelGroups = labels.selectAll('text')
@@ -138,13 +140,13 @@ function ready(error, us, data) {
   textLabel(labelGroups, 'name', 0);
   textLabel(labelGroups, 'value', 14);
 
-  data.forEach(function(d) {
+  data.forEach(function (d) {
     d3.selectAll('.state' + d.id)
         .style('fill', mapColor(parseFloat(d[observation])));
     d3.select('#statevalue' + d.id)
-        .html(legendDataType(d[observation]))
+        .html(legendDataType(d[observation]));
     d3.select('#statename' + d.id)
-        .html(d.abbr)
+        .html(d.abbr);
   });
 
   //drawLegend();
@@ -166,7 +168,7 @@ function addTooltip(label, number) {
 }
 
 function drawLegend() {
-  var legendData = [{'color': noDataColor, 'label': 'No Data'}],
+  var legendData = [{ color: noDataColor, label: 'No Data' }],
       legendDomain = [],
       legendScale,
       legendAxis;
@@ -174,7 +176,7 @@ function drawLegend() {
   for (var i = 0, j = colors.length; i < j; i++) {
     var fill = colors[i];
     var label = legendDataType(min + increment * i) + ((i === j - 1) ? '+' : '-' + legendDataType(min + increment * (i + 1)));
-    legendData[i + 1] = {'color': fill, 'label': label};
+    legendData[i + 1] = { color: fill, label: label, };
   }
 
   for (var k = 0, x = legendData.length; k < x; k++) {
@@ -195,14 +197,14 @@ function drawLegend() {
       .data(legendData)
   .enter()
       .append('rect')
-      .attr('x', function(d) {return legendScale(d.label);})
+      .attr('x', function (d) {return legendScale(d.label);})
       .attr('y', -30)
       .attr('height', 30)
       .attr('class', 'legend-item')
       .transition()
       .duration(700)
-      .attrTween('width', function() {return d3.interpolate(0, legendScale.rangeBand());})
-      .attrTween('fill', function(d) {return d3.interpolate('#fff', d.color);});
+      .attrTween('width', function () {return d3.interpolate(0, legendScale.rangeBand());})
+      .attrTween('fill', function (d) {return d3.interpolate('#fff', d.color);});
 }
 
 function scaleOffset(offset, type) {
@@ -218,8 +220,8 @@ function textLabel(labelGroup, className, yOffset) {
   labelGroup
     .append('text')
     .attr('class', 'state-' + className)
-    .attr('id', function(d) {return 'state' + className + d.id;})
-      .attr('text-anchor', function(d) {
+    .attr('id', function (d) {return 'state' + className + d.id;})
+      .attr('text-anchor', function (d) {
         if (labelOffsets[d.id] && labelOffsets[d.id].rectX) {
           return 'end';
         } else {
