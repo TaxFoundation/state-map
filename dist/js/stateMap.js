@@ -21,7 +21,7 @@ var colors = [],
     lowBaseColor = '#FFCE00', //Color applied at the end of the scale with the lowest values
     midBaseColor = '#FFAA93',
     highBaseColor = '#FF0068', //Color applied at the end of the scale with the highest values
-    scaleColor = d3.scale.linear()
+    scaleColor = d3.scaleLinear()
         .domain([0, steps - 1])
         .range([lowBaseColor, highBaseColor])
         .interpolate(d3.interpolateHcl); //Don't like the colors you get? Try interpolateHcl or interpolateHsl!
@@ -44,14 +44,14 @@ var tooltip = d3.select('body').append('div')
       thousands: d3.format('$s'),
     };
 
-var projection = d3.geo.albersUsa()
+var projection = d3.geoAlbersUsa()
     .scale(width * 1.2)
     .translate([width / 2, height - height * 0.6]);
 
-var path = d3.geo.path()
+var path = d3.geoPath()
     .projection(projection);
 
-var mapColor = d3.scale.linear()
+var mapColor = d3.scaleLinear()
     .domain([min, mid, max])
     .range([lowBaseColor, midBaseColor, highBaseColor]);
 
@@ -152,7 +152,7 @@ function ready(error, us, data) {
   //drawLegend();
 }
 
-var adjustment = d3.scale.linear()
+var adjustment = d3.scaleLinear()
                 .domain([0, width])
                 .range([0, 150]);
 
