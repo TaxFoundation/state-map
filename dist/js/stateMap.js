@@ -100,7 +100,7 @@ var labelOffsets = { //To preserve position with changes to width and height, se
   55: { x: -3, y: -10 },
 };
 
-queue()
+d3.queue()
     .defer(d3.json, 'data/us.json')
     .defer(d3.csv, dataPath)
     .await(ready);
