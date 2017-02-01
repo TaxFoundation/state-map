@@ -78,7 +78,7 @@ var labelOffsets = { //To preserve position with changes to width and height, se
   9:  { x: 0, y: 0, rectX: 910, rectY: 310 },
   10: { x: 0, y: 0, rectX: 910, rectY: 390 },
   11: { x: 0, y: 0, rectX: 910, rectY: 470 },
-  12: { x: 15, y: 0 },
+  12: { x: 25, y: 20 },
   13: { x: 5, y: 5 },
   15: { x: 0, y: 0 },
   17: { x: -5, y: -10 },
