@@ -139,7 +139,7 @@ var app = {
       d3.select('.subtitle').text(this.value);
     });
     document.getElementById('notes-text').addEventListener('input', function() {
-      d3.select('.note').text(this.value).call(wrap, 550);
+      d3.select('.note').text(this.value).call(app.wrap, 550);
     });
   },
 
@@ -150,6 +150,30 @@ var app = {
       case 'height':
         return (offset / 720) * height;
     }
+  },
+
+  wrap: function(text, width) {
+    text.each(function() {
+      var text = d3.select(this),
+          words = text.text().split(/\s+/).reverse(),
+          word,
+          line = [],
+          lineNumber = 0,
+          lineHeight = 16, // ems
+          y = text.attr('y'),
+          dy = parseFloat(text.attr('dy')) || 0,
+          tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy);
+      while (word = words.pop()) {
+        line.push(word);
+        tspan.text(line.join(' '));
+        if (tspan.node().getComputedTextLength() > width) {
+          line.pop();
+          tspan.text(line.join(' '));
+          line = [word];
+          tspan = text.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy).text(word);
+        }
+      }
+    });
   },
 };
 
@@ -365,28 +389,6 @@ function textLabel(labelGroup, className, yOffset) {
 }
 
 
-function wrap(text, width) {
-  text.each(function() {
-    var text = d3.select(this),
-        words = text.text().split(/\s+/).reverse(),
-        word,
-        line = [],
-        lineNumber = 0,
-        lineHeight = 16, // ems
-        y = text.attr("y"),
-        dy = parseFloat(text.attr("dy")) || 0,
-        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy);
-    while (word = words.pop()) {
-      line.push(word);
-      tspan.text(line.join(" "));
-      if (tspan.node().getComputedTextLength() > width) {
-        line.pop();
-        tspan.text(line.join(" "));
-        line = [word];
-        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy).text(word);
-      }
-    }
-  });
-}
+
 
 
