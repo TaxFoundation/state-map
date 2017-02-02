@@ -1,11 +1,81 @@
 'use strict'
 
+var DATA_PATH = 'data/data.csv';
+
+var mapParams = {
+  height: 820,
+  width: 960,
+  borderColor: '#ffffff',
+  noDataColor: '#dddddd'
+};
+
+var app = {
+  init: function(mapParams) {},
+
+  draw: function(data, options) {
+    var svg = d3.select('#map-container').append('svg')
+      .attr('id', 'the-svg')
+      .attr('width', '100%')
+      .attr('viewBox', '0 0 ' + width + ' ' + height);
+
+    var projection = d3.geoAlbersUsa()
+      .scale(width * 1.3)
+      .translate([width / 2, height - height * 0.6]);
+
+    var path = d3.geoPath()
+      .projection(projection);
+
+    var titles = svg.append('g')
+      .attr('class', 'titles');
+
+    var title = titles.append('text')
+      .attr('class', 'title')
+      .attr('x', 16)
+      .attr('y', 37)
+      .text('Title');
+
+    var notes = svg.append('g')
+      .attr('class', 'notes')
+      .append('text')
+      .attr('class', 'note')
+      .attr('x', 16)
+      .attr('y', 685)
+      .text('Notes and Source');
+
+    var subtitle = titles.append('text')
+      .attr('class', 'subtitle')
+      .attr('x', 19)
+      .attr('y', 63)
+      .text('Subtitle');
+
+    var map = svg.append('g')
+      .attr('class', 'states')
+      .attr('transform', 'translate(0, 45)');
+
+    var labels = svg.append('g')
+      .attr('class', 'labels')
+      .attr('transform', 'translate(0, 45)');
+  },
+
+  applyData: function() {},
+
+  setupListeners: function() {
+    document.getElementById('title-text').addEventListener('input', function() {
+      d3.select('.title').text(this.value);
+    });
+    document.getElementById('subtitle-text').addEventListener('input', function() {
+      d3.select('.subtitle').text(this.value);
+    });
+    document.getElementById('notes-text').addEventListener('input', function() {
+      d3.select('.note').text(this.value).call(wrap, 550);
+    });
+  },
+};
+
 var width = 960,
     height =  820,
 
-    svg = d3.select('#map-container').append('svg')
-        .attr('width', '100%')
-        .attr('viewBox', '0 0 ' + width + ' ' + height);
+    svg = 
 
 // Define increments for data scale
 var min = 84, //Floor for the first step
@@ -16,8 +86,6 @@ var min = 84, //Floor for the first step
 
 // Create distinct colors for each increment based on two base colors
 var colors = [],
-    borderColor = '#fff', //Color of borders between states
-    noDataColor = '#ddd', //Color applied when no data matches an element
     lowBaseColor = '#FFCE00', //Color applied at the end of the scale with the lowest values
     midBaseColor = '#FFAA93',
     highBaseColor = '#FF0068', //Color applied at the end of the scale with the highest values
@@ -32,59 +100,15 @@ for (var c = 0; c < steps; c++) {
   colors.push(scaleColor(c));
 }
 
-var tooltip = d3.select('body').append('div')
-    .attr('class', 'tooltip')
-    .style('position', 'absolute')
-    .style('opacity', 0),
 
-    dataFormat = {
-      percentage: d3.format('%'),
-      tens: d3.format('$,.2f'),
-      hundreds: d3.format('$,.5r'),
-      thousands: d3.format('$s'),
-    };
 
-var projection = d3.geoAlbersUsa()
-    .scale(width * 1.3)
-    .translate([width / 2, height - height * 0.6]);
 
-var path = d3.geoPath()
-    .projection(projection);
 
 var mapColor = d3.scaleLinear()
     .domain([min, mid, max])
     .range([lowBaseColor, midBaseColor, highBaseColor]);
 
-var titles = svg.append('g')
-    .attr('class', 'titles');
 
-var title = titles.append('text')
-    .attr('class', 'title')
-    .attr('x', 16)
-    .attr('y', 37)
-    .text('Title');
-
-var notes = svg.append('g')
-    .attr('class', 'notes')
-    .append('text')
-    .attr('class', 'note')
-    .attr('x', 16)
-    .attr('y', 685)
-    .text('Notes and Source');
-
-var subtitle = titles.append('text')
-    .attr('class', 'subtitle')
-    .attr('x', 19)
-    .attr('y', 63)
-    .text('Subtitle');
-
-var map = svg.append('g')
-    .attr('class', 'states')
-    .attr('transform', 'translate(0, 45)');
-
-var labels = svg.append('g')
-    .attr('class', 'labels')
-    .attr('transform', 'translate(0, 45)');
 
 var legend = svg.append('g')
     .attr('class', 'legend')
@@ -296,12 +320,4 @@ function wrap(text, width) {
   });
 }
 
-document.getElementById('title-text').addEventListener('input', function() {
-    d3.select('.title').text(this.value);
-});
-document.getElementById('subtitle-text').addEventListener('input', function() {
-    d3.select('.subtitle').text(this.value);
-});
-document.getElementById('notes-text').addEventListener('input', function() {
-    d3.select('.note').text(this.value).call(wrap, 550);
-});
+

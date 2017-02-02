@@ -1,11 +1,162 @@
 'use strict'
 
+var DATA_PATH = 'data/data.csv';
+
+var STATES = [
+  { id: 1, abbr: 'AL', name: 'Alabama' },
+  { id: 2, abbr: 'AK', name: 'Alaska' },
+  { id: 4, abbr: 'AZ', name: 'Arizona' },
+  { id: 5, abbr: 'AR', name: 'Arkansas' },
+  { id: 6, abbr: 'CA', name: 'California' },
+  { id: 8, abbr: 'CO', name: 'Colorado' },
+  { id: 9, abbr: 'CT', name: 'Connecticut' },
+  { id: 10, abbr: 'DE', name: 'Delaware' },
+  { id: 11, abbr: 'DC', name: 'District of Columbia' },
+  { id: 12, abbr: 'FL', name: 'Florida' },
+  { id: 13, abbr: 'GA', name: 'Georgia' },
+  { id: 15, abbr: 'HI', name: 'Hawaii' },
+  { id: 16, abbr: 'ID', name: 'Idaho' },
+  { id: 17, abbr: 'IL', name: 'Illinois' },
+  { id: 18, abbr: 'IN', name: 'Indiana' },
+  { id: 19, abbr: 'IA', name: 'Iowa' },
+  { id: 20, abbr: 'KS', name: 'Kansas' },
+  { id: 21, abbr: 'KY', name: 'Kentucky' },
+  { id: 22, abbr: 'LA', name: 'Louisiana' },
+  { id: 23, abbr: 'ME', name: 'Maine' },
+  { id: 24, abbr: 'MD', name: 'Maryland' },
+  { id: 25, abbr: 'MA', name: 'Massachusetts' },
+  { id: 26, abbr: 'MI', name: 'Michigan' },
+  { id: 27, abbr: 'MN', name: 'Minnesota' },
+  { id: 28, abbr: 'MS', name: 'Mississippi' },
+  { id: 29, abbr: 'MO', name: 'Missouri' },
+  { id: 30, abbr: 'MT', name: 'Montana' },
+  { id: 31, abbr: 'NE', name: 'Nebraska' },
+  { id: 32, abbr: 'NV', name: 'Nevada' },
+  { id: 33, abbr: 'NH', name: 'New Hampshire' },
+  { id: 34, abbr: 'NJ', name: 'New Jersey' },
+  { id: 35, abbr: 'NM', name: 'New Mexico' },
+  { id: 36, abbr: 'NY', name: 'New York' },
+  { id: 37, abbr: 'NC', name: 'North Carolina' },
+  { id: 38, abbr: 'ND', name: 'North Dakota' },
+  { id: 39, abbr: 'OH', name: 'Ohio' },
+  { id: 40, abbr: 'OK', name: 'Oklahoma' },
+  { id: 41, abbr: 'OR', name: 'Oregon' },
+  { id: 42, abbr: 'PA', name: 'Pennsylvania' },
+  { id: 44, abbr: 'RI', name: 'Rhode Island' },
+  { id: 45, abbr: 'SC', name: 'South Carolina' },
+  { id: 46, abbr: 'SD', name: 'South Dakota' },
+  { id: 47, abbr: 'TN', name: 'Tennessee' },
+  { id: 48, abbr: 'TX', name: 'Texas' },
+  { id: 49, abbr: 'UT', name: 'Utah' },
+  { id: 50, abbr: 'VT', name: 'Vermont' },
+  { id: 51, abbr: 'VA', name: 'Virginia' },
+  { id: 53, abbr: 'WA', name: 'Washington' },
+  { id: 54, abbr: 'WV', name: 'West Virginia' },
+  { id: 55, abbr: 'WI', name: 'Wisconsin' },
+  { id: 56, abbr: 'WY', name: 'Wyoming' },
+];
+
+var mapParams = {
+  height: 820,
+  width: 960,
+  borderColor: '#ffffff',
+  noDataColor: '#dddddd'
+};
+
+var app = {
+  init: function(mapParams) {
+    app.firstDraw(mapParams);
+    app.setupListeners();
+  },
+
+  firstDraw: function(mapParams) {
+    var svg = d3.select('#map-container').append('svg')
+      .attr('id', 'the-svg')
+      .attr('width', '100%')
+      .attr('viewBox', '0 0 ' + mapParams.width + ' ' + mapParams.height);
+
+    var projection = d3.geoAlbersUsa()
+      .scale(mapParams.width * 1.3)
+      .translate([mapParams.width / 2, mapParams.height - mapParams.height * 0.6]);
+
+    var path = d3.geoPath()
+      .projection(projection);
+
+    var titles = svg.append('g')
+      .attr('class', 'titles');
+
+    var title = titles.append('text')
+      .attr('class', 'title')
+      .attr('x', 16)
+      .attr('y', 37)
+      .text('Title');
+
+    var subtitle = titles.append('text')
+      .attr('class', 'subtitle')
+      .attr('x', 19)
+      .attr('y', 63)
+      .text('Subtitle');
+
+    var notes = svg.append('g')
+      .attr('class', 'notes')
+      .append('text')
+      .attr('class', 'note')
+      .attr('x', 16)
+      .attr('y', 685)
+      .text('Notes and Source');
+
+    var map = svg.append('g')
+      .attr('class', 'states')
+      .attr('transform', 'translate(0, 45)');
+
+    var labels = svg.append('g')
+      .attr('class', 'labels')
+      .attr('transform', 'translate(0, 45)');
+
+    d3.queue()
+      .defer(d3.json, 'data/us.json')
+      .await(function(error, data) {
+        map.selectAll('path')
+          .data(topojson.feature(us, us.objects.states).features)
+        .enter().append('path')
+          .attr('class', function (d) {return 'state' + d.id;})
+          .attr('d', path)
+          .attr('fill', mapParams.noDataColor)
+          .attr('stroke', '#fff')
+          .attr('stroke-width', 1.5);
+      });
+  },
+
+  redraw: function() {},
+
+  applyData: function() {},
+
+  setupListeners: function() {
+    document.getElementById('title-text').addEventListener('input', function() {
+      d3.select('.title').text(this.value);
+    });
+    document.getElementById('subtitle-text').addEventListener('input', function() {
+      d3.select('.subtitle').text(this.value);
+    });
+    document.getElementById('notes-text').addEventListener('input', function() {
+      d3.select('.note').text(this.value).call(wrap, 550);
+    });
+  },
+
+  scaleOffset: function(offset, type) {
+    switch (type) {
+      case 'width':
+        return (offset / 960) * width;
+      case 'height':
+        return (offset / 720) * height;
+    }
+  },
+};
+
 var width = 960,
     height =  820,
 
-    svg = d3.select('#map-container').append('svg')
-        .attr('width', '100%')
-        .attr('viewBox', '0 0 ' + width + ' ' + height);
+    svg = 
 
 // Define increments for data scale
 var min = 84, //Floor for the first step
@@ -16,8 +167,6 @@ var min = 84, //Floor for the first step
 
 // Create distinct colors for each increment based on two base colors
 var colors = [],
-    borderColor = '#fff', //Color of borders between states
-    noDataColor = '#ddd', //Color applied when no data matches an element
     lowBaseColor = '#FFCE00', //Color applied at the end of the scale with the lowest values
     midBaseColor = '#FFAA93',
     highBaseColor = '#FF0068', //Color applied at the end of the scale with the highest values
@@ -32,59 +181,15 @@ for (var c = 0; c < steps; c++) {
   colors.push(scaleColor(c));
 }
 
-var tooltip = d3.select('body').append('div')
-    .attr('class', 'tooltip')
-    .style('position', 'absolute')
-    .style('opacity', 0),
 
-    dataFormat = {
-      percentage: d3.format('%'),
-      tens: d3.format('$,.2f'),
-      hundreds: d3.format('$,.5r'),
-      thousands: d3.format('$s'),
-    };
 
-var projection = d3.geoAlbersUsa()
-    .scale(width * 1.3)
-    .translate([width / 2, height - height * 0.6]);
 
-var path = d3.geoPath()
-    .projection(projection);
 
 var mapColor = d3.scaleLinear()
     .domain([min, mid, max])
     .range([lowBaseColor, midBaseColor, highBaseColor]);
 
-var titles = svg.append('g')
-    .attr('class', 'titles');
 
-var title = titles.append('text')
-    .attr('class', 'title')
-    .attr('x', 16)
-    .attr('y', 37)
-    .text('Title');
-
-var notes = svg.append('g')
-    .attr('class', 'notes')
-    .append('text')
-    .attr('class', 'note')
-    .attr('x', 16)
-    .attr('y', 685)
-    .text('Notes and Source');
-
-var subtitle = titles.append('text')
-    .attr('class', 'subtitle')
-    .attr('x', 19)
-    .attr('y', 63)
-    .text('Subtitle');
-
-var map = svg.append('g')
-    .attr('class', 'states')
-    .attr('transform', 'translate(0, 45)');
-
-var labels = svg.append('g')
-    .attr('class', 'labels')
-    .attr('transform', 'translate(0, 45)');
 
 var legend = svg.append('g')
     .attr('class', 'legend')
@@ -232,14 +337,7 @@ function drawLegend() {
       .attrTween('fill', function (d) {return d3.interpolate('#fff', d.color);});
 }
 
-function scaleOffset(offset, type) {
-  switch (type) {
-    case 'width':
-      return (offset / 960) * width;
-    case 'height':
-      return (offset / 720) * height;
-  }
-}
+
 
 function textLabel(labelGroup, className, yOffset) {
   labelGroup
@@ -296,12 +394,4 @@ function wrap(text, width) {
   });
 }
 
-document.getElementById('title-text').addEventListener('input', function() {
-    d3.select('.title').text(this.value);
-});
-document.getElementById('subtitle-text').addEventListener('input', function() {
-    d3.select('.subtitle').text(this.value);
-});
-document.getElementById('notes-text').addEventListener('input', function() {
-    d3.select('.note').text(this.value).call(wrap, 550);
-});
+
