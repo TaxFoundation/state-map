@@ -1,7 +1,7 @@
 'use strict'
 
 var width = 960,
-    height = 720,
+    height =  820,
 
     svg = d3.select('#map-container').append('svg')
         .attr('width', '100%')
@@ -45,7 +45,7 @@ var tooltip = d3.select('body').append('div')
     };
 
 var projection = d3.geoAlbersUsa()
-    .scale(width * 1.2)
+    .scale(width * 1.3)
     .translate([width / 2, height - height * 0.6]);
 
 var path = d3.geoPath()
@@ -60,23 +60,31 @@ var titles = svg.append('g')
 
 var title = titles.append('text')
     .attr('class', 'title')
-    .attr('x', '16')
-    .attr('y', '37')
+    .attr('x', 16)
+    .attr('y', 37)
     .text('Title');
+
+var notes = svg.append('g')
+    .attr('class', 'notes')
+    .append('text')
+    .attr('class', 'note')
+    .attr('x', 16)
+    .attr('y', 685)
+    .text('Notes and Source');
 
 var subtitle = titles.append('text')
     .attr('class', 'subtitle')
-    .attr('x', '19')
-    .attr('y', '63')
+    .attr('x', 19)
+    .attr('y', 63)
     .text('Subtitle');
 
 var map = svg.append('g')
     .attr('class', 'states')
-    .attr('transform', 'translate(0, 75)');
+    .attr('transform', 'translate(0, 45)');
 
 var labels = svg.append('g')
     .attr('class', 'labels')
-    .attr('transform', 'translate(0, 75)');
+    .attr('transform', 'translate(0, 45)');
 
 var legend = svg.append('g')
     .attr('class', 'legend')
@@ -263,9 +271,37 @@ function textLabel(labelGroup, className, yOffset) {
       });
 }
 
+
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 16, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")) || 0,
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy);
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy).text(word);
+      }
+    }
+  });
+}
+
 document.getElementById('title-text').addEventListener('input', function() {
     d3.select('.title').text(this.value);
 });
 document.getElementById('subtitle-text').addEventListener('input', function() {
     d3.select('.subtitle').text(this.value);
+});
+document.getElementById('notes-text').addEventListener('input', function() {
+    d3.select('.note').text(this.value).call(wrap, 550);
 });
