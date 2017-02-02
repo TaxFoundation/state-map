@@ -117,7 +117,7 @@ var app = {
       .defer(d3.json, 'data/us.json')
       .await(function(error, data) {
         map.selectAll('path')
-          .data(topojson.feature(us, us.objects.states).features)
+          .data(topojson.feature(data, data.objects.states).features)
         .enter().append('path')
           .attr('class', function (d) {return 'state' + d.id;})
           .attr('d', path)
@@ -153,11 +153,6 @@ var app = {
   },
 };
 
-var width = 960,
-    height =  820,
-
-    svg = 
-
 // Define increments for data scale
 var min = 84, //Floor for the first step
     mid = 100,
@@ -191,15 +186,15 @@ var mapColor = d3.scaleLinear()
 
 
 
-var legend = svg.append('g')
-    .attr('class', 'legend')
-    .attr('transform', 'translate(0,' + (height - height * 0.1) + ')');
+// var legend = svg.append('g')
+//     .attr('class', 'legend')
+//     .attr('transform', 'translate(0,' + (height - height * 0.1) + ')');
 
 // Set params and queue map files
-var dataPath = 'data/100-dollar-map.csv',
-    legendDataType = dataFormat.tens,
-    tooltipDataType = dataFormat.tens,
-    observation = 'value';
+// var dataPath = 'data/100-dollar-map.csv',
+//     legendDataType = dataFormat.tens,
+//     tooltipDataType = dataFormat.tens,
+//     observation = 'value';
 
 var smallStateRects = [{ id: 9 }, { id: 10 }, { id: 11 }, { id: 24 }, { id: 25 }, { id: 33 }, { id: 34 }, { id: 44 }, { id: 50 }];
 
@@ -230,10 +225,10 @@ var labelOffsets = { //To preserve position with changes to width and height, se
   55: { x: -3, y: -10 },
 };
 
-d3.queue()
-    .defer(d3.json, 'data/us.json')
-    .defer(d3.csv, dataPath)
-    .await(ready);
+// d3.queue()
+//     .defer(d3.json, 'data/us.json')
+//     .defer(d3.csv, dataPath)
+//     .await(ready);
 
 // Map-building functions
 function ready(error, us, data) {
@@ -282,9 +277,9 @@ function ready(error, us, data) {
   //drawLegend();
 }
 
-var adjustment = d3.scaleLinear()
-                .domain([0, width])
-                .range([0, 150]);
+// var adjustment = d3.scaleLinear()
+//                 .domain([0, width])
+//                 .range([0, 150]);
 
 function addTooltip(label, number) {
   tooltip.transition()
