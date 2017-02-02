@@ -4,8 +4,8 @@ var width = 960,
     height = 720,
 
     svg = d3.select('body').append('svg')
-        .attr('width', width)
-        .attr('height', height);
+        .attr('width', '100%')
+        .attr('viewBox', '0 0 ' + width + ' ' + height);
 
 // Define increments for data scale
 var min = 84, //Floor for the first step
@@ -55,11 +55,28 @@ var mapColor = d3.scaleLinear()
     .domain([min, mid, max])
     .range([lowBaseColor, midBaseColor, highBaseColor]);
 
+var titles = svg.append('g')
+    .attr('class', 'titles');
+
+var title = titles.append('text')
+    .attr('class', 'title')
+    .attr('x', '16')
+    .attr('y', '37')
+    .text('Title');
+
+var subtitle = titles.append('text')
+    .attr('class', 'subtitle')
+    .attr('x', '19')
+    .attr('y', '63')
+    .text('Subtitle');
+
 var map = svg.append('g')
-    .attr('class', 'counties');
+    .attr('class', 'states')
+    .attr('transform', 'translate(0, 75)');
 
 var labels = svg.append('g')
-    .attr('class', 'labels');
+    .attr('class', 'labels')
+    .attr('transform', 'translate(0, 75)');
 
 var legend = svg.append('g')
     .attr('class', 'legend')
