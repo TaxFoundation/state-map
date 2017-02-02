@@ -531,6 +531,13 @@ body {
   margin: 0;
   padding: 0; }
 
+.page-title {
+  border-bottom: 1px solid #aaaaaa;
+  margin-bottom: 16px;
+  padding: 16px; }
+  .page-title > h1 {
+    margin: 0; }
+
 .tooltip {
   background-color: #fff;
   font: 14px sans-serif;
