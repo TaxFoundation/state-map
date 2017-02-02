@@ -8,11 +8,16 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <div id="map-container"></div>
-        <div id="controls-container">
-            <label>Title</label><input type="text" id="title-text">
-            <label>Subtitle</label><input type="text" id="subtitle-text">
+        <div class="container">
+            <div class="row">
+                <div class="column column-67" id="map-container"></div>
+                <div class="column" id="controls-container">
+                    <label>Title</label><input type="text" id="title-text">
+                    <label>Subtitle</label><input type="text" id="subtitle-text">
+                </div>
+            </div>
         </div>
+
         <script src="//d3js.org/d3.v4.min.js"></script>
         <script src="//d3js.org/topojson.v2.min.js"></script>
         <script src="js/stateMap.js"></script>
