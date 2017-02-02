@@ -1,5 +1,12 @@
 'use strict'
 
+var mapParams = {
+  height: 820,
+  width: 960,
+  borderColor: '#ffffff',
+  noDataColor: '#dddddd'
+};
+
 var DATA_PATH = 'data/data.csv';
 
 var STATES = [
@@ -55,13 +62,6 @@ var STATES = [
   { id: 55, abbr: 'WI', name: 'Wisconsin' },
   { id: 56, abbr: 'WY', name: 'Wyoming' },
 ];
-
-var mapParams = {
-  height: 820,
-  width: 960,
-  borderColor: '#ffffff',
-  noDataColor: '#dddddd'
-};
 
 var app = {
   init: function(mapParams) {
@@ -388,7 +388,6 @@ function textLabel(labelGroup, className, yOffset) {
       });
 }
 
-
-
-
-
+(function() {
+  app.init(mapParams);
+})();
