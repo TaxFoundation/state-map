@@ -3,7 +3,7 @@
 var width = 960,
     height = 720,
 
-    svg = d3.select('body').append('svg')
+    svg = d3.select('#map-container').append('svg')
         .attr('width', '100%')
         .attr('viewBox', '0 0 ' + width + ' ' + height);
 
@@ -105,13 +105,13 @@ var labelOffsets = { //To preserve position with changes to width and height, se
   25: { x: 0, y: 0, rectX: 910, rectY: 230 },
   26: { x: 15, y: 22 },
   27: { x: 0, y: -20 },
-  33: { x: 0, y: 0, rectX: 805, rectY: 50 },
+  33: { x: 0, y: 0, rectX: 795, rectY: 50 },
   34: { x: 0, y: 0, rectX: 910, rectY: 350 },
   36: { x: 0, y: 0 },
   37: { x: 0, y: 0 },
   44: { x: 0, y: 0, rectX: 910, rectY: 270 },
   45: { x: 0, y: 0 },
-  50: { x: 0, y: 0, rectX: 705, rectY: 50 },
+  50: { x: 0, y: 0, rectX: 695, rectY: 50 },
   51: { x: 0, y: 0 },
   54: { x: 0, y: 0 },
   55: { x: -3, y: -10 },
@@ -138,13 +138,13 @@ function ready(error, us, data) {
   map.selectAll('rect')
       .data(smallStateRects)
   .enter().append('rect')
-      .attr('width', function () {return scaleOffset(28, 'width');})
-      .attr('height', function () {return scaleOffset(28, 'height');})
+      .attr('width', function () {return scaleOffset(18, 'width');})
+      .attr('height', function () {return scaleOffset(18, 'height');})
         .attr('x', function (d) {
           return scaleOffset((labelOffsets[d.id].rectX + 10), 'width');
         })
         .attr('y', function (d) {
-          return scaleOffset((labelOffsets[d.id].rectY - 12), 'height');
+          return scaleOffset((labelOffsets[d.id].rectY - 14), 'height');
         })
         .attr('fill', noDataColor)
         .attr('class', function (d) {return 'state' + d.id;});
@@ -155,7 +155,7 @@ function ready(error, us, data) {
       .enter().append('g');
 
   textLabel(labelGroups, 'name', 0);
-  textLabel(labelGroups, 'value', 14);
+  textLabel(labelGroups, 'value', 16);
 
   data.forEach(function (d) {
     d3.selectAll('.state' + d.id)
@@ -248,7 +248,9 @@ function textLabel(labelGroup, className, yOffset) {
       .attr('transform', function(d) {
         var centroid = path.centroid(d);
         if (labelOffsets[d.id] && labelOffsets[d.id].rectX) {
-          return 'translate(' + labelOffsets[d.id].rectX + ',' + (labelOffsets[d.id].rectY + yOffset) + ')';
+          return 'translate('
+            + labelOffsets[d.id].rectX + ','
+            + (labelOffsets[d.id].rectY + yOffset) + ')';
         } else if (labelOffsets[d.id]) {
           var x = Math.floor(centroid[0]) + scaleOffset(labelOffsets[d.id].x, 'width'),
               y = Math.floor(centroid[1]) + scaleOffset(labelOffsets[d.id].y, 'height');
@@ -260,3 +262,10 @@ function textLabel(labelGroup, className, yOffset) {
         }
       });
 }
+
+document.getElementById('title-text').addEventListener('input', function() {
+    d3.select('.title').text(this.value);
+});
+document.getElementById('subtitle-text').addEventListener('input', function() {
+    d3.select('.subtitle').text(this.value);
+});
