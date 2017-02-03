@@ -141,6 +141,9 @@ var app = {
     document.getElementById('notes-text').addEventListener('input', function() {
       d3.select('.note').text(this.value).call(app.wrap, 550);
     });
+    document.getElementById('data-file').addEventListener('change', function() {
+      app.readFile(this.files[0]);
+    });
   },
 
   scaleOffset: function(offset, type) {
@@ -174,6 +177,16 @@ var app = {
         }
       }
     });
+  },
+
+  readFile: function(file) {
+    var reader = new FileReader();
+    reader.onload = function(event) {
+      var data = event.target.result;
+      console.log(data); //Test output
+    }
+
+    reader.readAsText(file);
   },
 };
 
