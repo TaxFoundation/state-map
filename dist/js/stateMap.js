@@ -65,6 +65,7 @@ var STATES = [
 
 var app = {
   init: function(mapParams) {
+    this.rawData = [];
     app.firstDraw(mapParams);
     app.setupListeners();
   },
@@ -182,11 +183,14 @@ var app = {
   readFile: function(file) {
     var reader = new FileReader();
     reader.onload = function(event) {
-      var data = event.target.result;
-      console.log(data); //Test output
+      app.rawData = event.target.result;
     }
 
     reader.readAsText(file);
+  },
+
+  parseFile: function(fileText) {
+    
   },
 };
 
