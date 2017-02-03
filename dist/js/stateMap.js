@@ -128,9 +128,12 @@ var app = {
       });
   },
 
-  redraw: function() {},
-
-  applyData: function() {},
+  redraw: function() {
+    app.data.forEach(function(d) {
+      d3.select('.state' + d.id)
+        .attr('fill', '#000000'); // TODO replace with color scale and values
+    });
+  },
 
   setupListeners: function() {
     document.getElementById('title-text').addEventListener('input', function() {
