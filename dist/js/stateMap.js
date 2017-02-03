@@ -1,12 +1,5 @@
 'use strict'
 
-var mapParams = {
-  height: 820,
-  width: 960,
-  borderColor: '#ffffff',
-  noDataColor: '#dddddd'
-};
-
 var DATA_PATH = 'data/data.csv';
 
 var STATES = [
@@ -64,21 +57,25 @@ var STATES = [
 ];
 
 var app = {
-  init: function(mapParams) {
+  init: function() {
+    this.height = 820;
+    this.width = 960;
+    this.borderColor = '#ffffff';
+    this.noDataColor = '#dddddd';
     this.data = [];
-    app.firstDraw(mapParams);
+    app.firstDraw();
     app.setupListeners();
   },
 
-  firstDraw: function(mapParams) {
+  firstDraw: function() {
     var svg = d3.select('#map-container').append('svg')
       .attr('id', 'the-svg')
       .attr('width', '100%')
-      .attr('viewBox', '0 0 ' + mapParams.width + ' ' + mapParams.height);
+      .attr('viewBox', '0 0 ' + app.width + ' ' + app.height);
 
     var projection = d3.geoAlbersUsa()
-      .scale(mapParams.width * 1.3)
-      .translate([mapParams.width / 2, mapParams.height - mapParams.height * 0.6]);
+      .scale(app.width * 1.3)
+      .translate([app.width / 2, app.height - app.height * 0.6]);
 
     var path = d3.geoPath()
       .projection(projection);
@@ -122,7 +119,7 @@ var app = {
         .enter().append('path')
           .attr('class', function (d) {return 'state' + d.id;})
           .attr('d', path)
-          .attr('fill', mapParams.noDataColor)
+          .attr('fill', app.noDataColor)
           .attr('stroke', '#fff')
           .attr('stroke-width', 1.5);
       });
@@ -410,5 +407,5 @@ function textLabel(labelGroup, className, yOffset) {
 }
 
 (function() {
-  app.init(mapParams);
+  app.init(app);
 })();
