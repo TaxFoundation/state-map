@@ -145,15 +145,14 @@ var app = {
     document.getElementById('data-file').addEventListener('change', function() {
       app.readFile(this.files[0], app.parseFile);
     });
-  },
-
-  scaleOffset: function(offset, type) {
-    switch (type) {
-      case 'width':
-        return (offset / 960) * width;
-      case 'height':
-        return (offset / 720) * height;
-    }
+    document.getElementById('data-scale').addEventListener('change', function() {
+      var midValue = document.getElementById('mid-value');
+      if (this.value !== 'divergent') {
+        midValue.disabled = false;
+      } else {
+        midValue.disabled = true;
+      }
+    })
   },
 
   wrap: function(text, width) {
