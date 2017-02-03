@@ -147,13 +147,8 @@ var app = {
       app.readFile(this.files[0], app.parseFile);
     });
     document.getElementById('data-scale').addEventListener('change', function() {
-      var midValue = document.getElementById('mid-value');
-      if (this.value !== 'divergent') {
-        midValue.disabled = false;
-      } else {
-        midValue.disabled = true;
-      }
-    })
+      app.dataScaleListener(this);
+    });
   },
 
   wrap: function(text, width) {
@@ -210,6 +205,15 @@ var app = {
     d3.select('#data-scale-container').attr('style', '');
     d3.select('#data-stats').attr('style', '');
   },
+
+  dataScaleListener: function(dataScale) {
+    var midValue = document.getElementById('mid-value');
+    if (dataScale.value !== 'divergent') {
+      midValue.disabled = true;
+    } else {
+      midValue.disabled = false;
+    }
+  }
 };
 
 // Define increments for data scale
