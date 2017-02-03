@@ -217,6 +217,11 @@ select {
   height: 3.8rem;
   padding: .6rem 1.0rem;
   width: 100%;
+
+  &:disabled {
+    background-color: #eeeeee;
+    border: 0.1rem solid #eeeeee;
+  }
 }
 
 input[type='email']:focus,

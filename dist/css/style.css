@@ -197,6 +197,17 @@ select {
   height: 3.8rem;
   padding: .6rem 1.0rem;
   width: 100%; }
+  input[type='email']:disabled,
+  input[type='number']:disabled,
+  input[type='password']:disabled,
+  input[type='search']:disabled,
+  input[type='tel']:disabled,
+  input[type='text']:disabled,
+  input[type='url']:disabled,
+  textarea:disabled,
+  select:disabled {
+    background-color: #eeeeee;
+    border: 0.1rem solid #eeeeee; }
 
 input[type='email']:focus,
 input[type='number']:focus,

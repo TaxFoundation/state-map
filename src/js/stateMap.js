@@ -183,7 +183,11 @@ var app = {
   readFile: function(file, callback) {
     var reader = new FileReader();
     reader.onload = function(event) {
-      callback(event.target.result);
+      if (file.type != 'text/csv') {
+        alert('This file is not a comma-separated values file. This program only reads CSV files.')
+      } else {
+        callback(event.target.result);
+      }
     }
 
     reader.readAsText(file);
@@ -197,7 +201,8 @@ var app = {
         .text(d);
     });
     d3.select('#data-select').attr('style', '');
-    console.log(app.data.columns); // Sanity check
+    d3.select('#data-scale-container').attr('style', '');
+    d3.select('#data-stats').attr('style', '');
   },
 };
 

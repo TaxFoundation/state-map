@@ -15,13 +15,19 @@
             <div class="row">
                 <div class="column column-67" id="map-container"></div>
                 <div class="column" id="controls-container">
+                    <label>Title</label><input type="text" id="title-text" placeholder="Title">
+
+                    <label>Subtitle</label><input type="text" id="subtitle-text" placeholder="Subtitle">
+
+                    <label>Notes and Source</label><textarea id="notes-text"></textarea>
+
                     <label>Data File</label><input type="file" id="data-file">
 
                     <div id="data-select" class="row" style="display:none">
                         <div class="column">
                             <label>IDed By</label>
                             <select id="identified-by">
-                                <option value="id">FIPS Code</option>
+                                <option value="id" selected>FIPS Code</option>
                                 <option value="abbr">Postal Abbreviation</option>
                                 <option value="name">State Name</option>
                             </select>
@@ -32,11 +38,32 @@
                         </div>
                     </div>
 
-                    <label>Title</label><input type="text" id="title-text" placeholder="Title">
+                    <div id="data-scale-container" class="row" style="display:none">
+                        <div class="column">
+                            <label>Data Scale</label>
+                            <select id="data-scale">
+                                <option value="sequential" selected>Sequential</option>
+                                <option value="divergent">Divergent</option>
+                                <option value="qualitative">Qualitative</option>
+                            </select>
+                        </div>
 
-                    <label>Subtitle</label><input type="text" id="subtitle-text" placeholder="Subtitle">
+                    </div>
 
-                    <label>Notes and Source</label><textarea id="notes-text"></textarea>
+                    <div id="data-stats" class="row" style="display:none">
+                        <div class="column">
+                            <label>Min</label>
+                            <input type="text" id="min-value">
+                        </div>
+                        <div class="column">
+                            <label>Mid</label>
+                            <input type="text" id="mid-value" disabled>
+                        </div>
+                        <div class="column">
+                            <label>Max</label>
+                            <input type="text" id="max-value">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
