@@ -65,7 +65,7 @@ var STATES = [
 
 var app = {
   init: function(mapParams) {
-    this.rawData = [];
+    this.data = [];
     app.firstDraw(mapParams);
     app.setupListeners();
   },
@@ -143,7 +143,7 @@ var app = {
       d3.select('.note').text(this.value).call(app.wrap, 550);
     });
     document.getElementById('data-file').addEventListener('change', function() {
-      app.readFile(this.files[0]);
+      app.readFile(this.files[0], app.parseFile);
     });
   },
 
@@ -180,17 +180,18 @@ var app = {
     });
   },
 
-  readFile: function(file) {
+  readFile: function(file, callback) {
     var reader = new FileReader();
     reader.onload = function(event) {
-      app.rawData = event.target.result;
+      callback(event.target.result);
     }
 
     reader.readAsText(file);
   },
 
-  parseFile: function(fileText) {
-    
+  parseFile: function(rawData) {
+    app.data = d3.csvParse(rawData);
+    console.log(app.data.columns); // Sanity check
   },
 };
 
