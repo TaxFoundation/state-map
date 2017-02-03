@@ -146,6 +146,12 @@ var app = {
     document.getElementById('data-file').addEventListener('change', function() {
       app.readFile(this.files[0], app.parseFile);
     });
+    document.getElementById('value-type').addEventListener('change', function() {
+      console.log('value type changed');
+    });
+    document.getElementById('value-col').addEventListener('change', function() {
+      console.log('value col changed');
+    })
     document.getElementById('data-scale').addEventListener('change', function() {
       app.dataScaleListener(this);
     });
@@ -204,6 +210,12 @@ var app = {
     d3.select('#data-value-select').attr('style', '');
     d3.select('#data-scale-container').attr('style', '');
     d3.select('#data-stats').attr('style', '');
+  },
+
+  valueColListener: function(valueCol) {
+    if (valueCol.value !== 'default') {
+      // TODO compute stuff
+    }
   },
 
   dataScaleListener: function(dataScale) {
