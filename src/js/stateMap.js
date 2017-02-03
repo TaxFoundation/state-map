@@ -191,6 +191,12 @@ var app = {
 
   parseFile: function(rawData) {
     app.data = d3.csvParse(rawData);
+    app.data.columns.forEach(function(d) {
+      d3.select('#identified-col').append('option')
+        .attr('value', d)
+        .text(d);
+    });
+    d3.select('#data-select').attr('style', '');
     console.log(app.data.columns); // Sanity check
   },
 };

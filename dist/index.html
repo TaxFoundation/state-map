@@ -16,8 +16,26 @@
                 <div class="column column-67" id="map-container"></div>
                 <div class="column" id="controls-container">
                     <label>Data File</label><input type="file" id="data-file">
+
+                    <div id="data-select" class="row" style="display:none">
+                        <div class="column">
+                            <label>IDed By</label>
+                            <select id="identified-by">
+                                <option value="id">FIPS Code</option>
+                                <option value="abbr">Postal Abbreviation</option>
+                                <option value="name">State Name</option>
+                            </select>
+                        </div>
+                        <div class="column">
+                            <label>ID Column</label>
+                            <select id="identified-col"></select>
+                        </div>
+                    </div>
+
                     <label>Title</label><input type="text" id="title-text" placeholder="Title">
+
                     <label>Subtitle</label><input type="text" id="subtitle-text" placeholder="Subtitle">
+
                     <label>Notes and Source</label><textarea id="notes-text"></textarea>
                 </div>
             </div>
