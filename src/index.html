@@ -23,7 +23,7 @@
 
                     <label>Data File</label><input type="file" id="data-file">
 
-                    <div id="data-select" class="row" style="display:none">
+                    <div id="data-id-select" class="row" style="display:none">
                         <div class="column">
                             <label>IDed By</label>
                             <select id="identified-by">
@@ -34,7 +34,27 @@
                         </div>
                         <div class="column">
                             <label>ID Column</label>
-                            <select id="identified-col"></select>
+                            <select id="identified-col">
+                                <option value="default">Please choose...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="data-value-select" class="row" style="display:none">
+                        <div class="column">
+                            <label>Data Type</label>
+                            <select id="value-type">
+                                <option value="number" selected>Number</option>
+                                <option value="percent">Percentage</option>
+                                <option value="dollar">Dollar</option>
+                                <option value="categories">Qualitative Categories</option>
+                            </select>
+                        </div>
+                        <div class="column">
+                            <label>Data Column</label>
+                            <select id="value-col">
+                                <option value="default">Please choose...</option>
+                            </select>
                         </div>
                     </div>
 

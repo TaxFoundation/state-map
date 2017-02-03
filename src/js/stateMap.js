@@ -63,6 +63,7 @@ var app = {
     this.borderColor = '#ffffff';
     this.noDataColor = '#dddddd';
     this.data = [];
+    this.parsed = false;
     app.firstDraw();
     app.setupListeners();
   },
@@ -194,12 +195,18 @@ var app = {
 
   parseFile: function(rawData) {
     app.data = d3.csvParse(rawData);
+
     app.data.columns.forEach(function(d) {
       d3.select('#identified-col').append('option')
         .attr('value', d)
         .text(d);
+
+      d3.select('#value-col').append('option')
+        .attr('value', d)
+        .text(d);
     });
-    d3.select('#data-select').attr('style', '');
+    d3.select('#data-id-select').attr('style', '');
+    d3.select('#data-value-select').attr('style', '');
     d3.select('#data-scale-container').attr('style', '');
     d3.select('#data-stats').attr('style', '');
   },
