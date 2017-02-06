@@ -64,6 +64,8 @@ var app = {
     this.noDataColor = '#dddddd';
     this.data = [];
     this.parsed = false;
+    this.identifiedBy = 'id';
+    this.identifiedCol = '';
     app.firstDraw();
     app.setupListeners();
   },
@@ -146,12 +148,18 @@ var app = {
     document.getElementById('data-file').addEventListener('change', function() {
       app.readFile(this.files[0], app.parseFile);
     });
+    document.getElementById('identified-by').addEventListener('change', function() {
+      app.identifiedBy = this.value;
+    });
+    document.getElementById('identified-col').addEventListener('change', function() {
+      app.identifiedCol = this.value;
+    });
     document.getElementById('value-type').addEventListener('change', function() {
       console.log('value type changed');
     });
     document.getElementById('value-col').addEventListener('change', function() {
       console.log('value col changed');
-    })
+    });
     document.getElementById('data-scale').addEventListener('change', function() {
       app.dataScaleListener(this);
     });
@@ -225,6 +233,15 @@ var app = {
     } else {
       midValue.disabled = false;
     }
+  },
+
+  getFipsId: function(identifiedBy, value) {
+    // Filter array of states by identifiedBy and get FIPS
+    var state = STATES.filter(function(s) {
+      return s[identifiedBy] == value;
+    });
+
+    return state.id;
   }
 };
 
