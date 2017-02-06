@@ -56,6 +56,25 @@ var STATES = [
   { id: 56, abbr: 'WY', name: 'Wyoming' },
 ];
 
+var TOP_RECT_STATES = [33, 50];
+var SIDE_RECT_STATES = [9, 10, 11, 24, 25, 34, 44, 54];
+var LABEL_OFFSETS = { //To preserve position with changes to width and height, set all values to percentage * width or height
+  2:  { x: 5, y: -10 },
+  12: { x: 25, y: 20 },
+  13: { x: 5, y: 5 },
+  15: { x: 0, y: 0 },
+  17: { x: -5, y: -10 },
+  22: { x: -10, y: 0 },
+  23: { x: 0, y: -5 },
+  26: { x: 15, y: 22 },
+  27: { x: 0, y: -20 },
+  36: { x: 0, y: 0 },
+  37: { x: 0, y: 0 },
+  45: { x: 0, y: 0 },
+  51: { x: 0, y: 0 },
+  55: { x: -3, y: -10 },
+};
+
 var app = {
   init: function() {
     this.height = 820;
@@ -64,6 +83,9 @@ var app = {
     this.noDataColor = '#dddddd';
     this.data = [];
     this.parsed = false;
+    this.sideRectXStart = 890;
+    this.sideRectYStart = 265;
+    this.sideRectOffset = 40;
     this.identifiedBy = 'id';
     this.identifiedCol = '';
     app.firstDraw();
@@ -135,7 +157,13 @@ var app = {
           .attr('transform', function(d) {
             var centroid = path.centroid(d);
             if (centroid[0] && centroid[1]) {
-              return 'translate(' + centroid[0] + ',' + centroid[1] + ')';
+              if (LABEL_OFFSETS[d.id]) {
+                return 'translate('
+                + (centroid[0] + LABEL_OFFSETS[d.id].x) + ','
+                + (centroid[1] + LABEL_OFFSETS[d.id].y) + ')';
+              } else {
+                return 'translate(' + centroid[0] + ',' + centroid[1] + ')';
+              }
             } else {
               return 'translate(0,0)';
             }
@@ -155,6 +183,31 @@ var app = {
               return '';
             }
           });
+
+        var sideRects = 0;
+        SIDE_RECT_STATES.forEach(function(s) {
+          map.append('rect')
+            .attr('x', app.sideRectXStart)
+            .attr('y', app.sideRectYStart + (app.sideRectOffset * sideRects))
+            .attr('width', 12)
+            .attr('height', 12)
+            .attr('fill', app.noDataColor)
+            .attr('class', function(s) { return 'state' + s;});
+
+          d3.select('.labels' + s)
+            .attr('transform', function(s) {
+              return 'translate('
+              + (app.sideRectXStart - 6)
+              + ','
+              + ((app.sideRectYStart + 11) + (app.sideRectOffset * sideRects))
+              + ')';
+            });
+
+          d3.select('.abbr' + s)
+            .attr('text-anchor', 'end');
+
+          sideRects++;
+        });
       });
   },
 
@@ -318,34 +371,7 @@ var mapColor = d3.scaleLinear()
 //     tooltipDataType = dataFormat.tens,
 //     observation = 'value';
 
-var smallStateRects = [{ id: 9 }, { id: 10 }, { id: 11 }, { id: 24 }, { id: 25 }, { id: 33 }, { id: 34 }, { id: 44 }, { id: 50 }];
 
-var labelOffsets = { //To preserve position with changes to width and height, set all values to percentage * width or height
-  2:  { x: 5, y: -10 },
-  9:  { x: 0, y: 0, rectX: 910, rectY: 310 },
-  10: { x: 0, y: 0, rectX: 910, rectY: 390 },
-  11: { x: 0, y: 0, rectX: 910, rectY: 470 },
-  12: { x: 25, y: 20 },
-  13: { x: 5, y: 5 },
-  15: { x: 0, y: 0 },
-  17: { x: -5, y: -10 },
-  22: { x: 0, y: 0 },
-  23: { x: 0, y: -5 },
-  24: { x: 0, y: 0, rectX: 910, rectY: 430 },
-  25: { x: 0, y: 0, rectX: 910, rectY: 230 },
-  26: { x: 15, y: 22 },
-  27: { x: 0, y: -20 },
-  33: { x: 0, y: 0, rectX: 795, rectY: 50 },
-  34: { x: 0, y: 0, rectX: 910, rectY: 350 },
-  36: { x: 0, y: 0 },
-  37: { x: 0, y: 0 },
-  44: { x: 0, y: 0, rectX: 910, rectY: 270 },
-  45: { x: 0, y: 0 },
-  50: { x: 0, y: 0, rectX: 695, rectY: 50 },
-  51: { x: 0, y: 0 },
-  54: { x: 0, y: 0 },
-  55: { x: -3, y: -10 },
-};
 
 // d3.queue()
 //     .defer(d3.json, 'data/us.json')
