@@ -148,7 +148,12 @@ var app = {
             var state = STATES.filter(function(s) {
               return s.id == d.id;
             });
-            return state[0].abbr;
+
+            if (state[0]) {
+              return state[0].abbr;
+            } else {
+              return '';
+            }
           });
       });
   },
