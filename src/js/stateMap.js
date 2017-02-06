@@ -88,12 +88,14 @@ var app = {
 
     var title = titles.append('text')
       .attr('class', 'title')
+      .attr('style', 'font-family: \'Lato\', Arial, sans-serif; font-size: 32px; font-style: normal; font-weight:700')
       .attr('x', 16)
       .attr('y', 37)
       .text('Title');
 
     var subtitle = titles.append('text')
       .attr('class', 'subtitle')
+      .attr('style', 'font-family: \'Lato\', Arial, sans-serif; font-size: 18px; font-style: italic; font-weight:400')
       .attr('x', 19)
       .attr('y', 63)
       .text('Subtitle');
@@ -141,6 +143,7 @@ var app = {
           .append('text')
           .attr('class', function(d) {return 'abbr' + d.id;})
           .attr('text-anchor', 'middle')
+          .attr('style', 'font-family: \'Lato\', Arial, sans-serif; font-size: 14px; font-style: normal; font-weight:700')
           .text(function(d) {
             var state = STATES.filter(function(s) {
               return s.id == d.id;
