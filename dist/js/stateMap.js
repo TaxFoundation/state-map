@@ -125,6 +125,28 @@ var app = {
           .attr('fill', app.noDataColor)
           .attr('stroke', '#fff')
           .attr('stroke-width', 1.5);
+
+        labels.selectAll('g')
+          .data(topojson.feature(data, data.objects.states).features)
+        .enter().append('g')
+          .attr('class', function(d) {return 'labels' + d.id;})
+          .append('text')
+          .attr('class', function(d) {return 'abbr' + d.id;})
+          .attr('text-anchor', 'middle')
+          .attr('transform', function(d) {
+            var centroid = path.centroid(d);
+            if (centroid[0] && centroid[1]) {
+              return 'translate(' + centroid[0] + ',' + centroid[1] + ')';
+            } else {
+              return 'translate(0,0)';
+            }
+          })
+          .text(function(d) {
+            var state = STATES.filter(function(s) {
+              return s.id == d.id;
+            });
+            return state[0].abbr;
+          });
       });
   },
 
