@@ -350,6 +350,13 @@ var app = {
         }
       });
       console.log(validated, invalid);
+      if (invalid.length) {
+        d3.select('#data-validation')
+          .text('Could not validate: ' + invalid.join(', '));
+      } else if (!invalid.length) {
+        d3.select('#data-validation')
+          .text('All IDs validated.');
+      }
     }
   },
 };
