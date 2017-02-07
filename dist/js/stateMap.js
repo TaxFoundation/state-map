@@ -88,6 +88,8 @@ var app = {
     this.sideRectOffset = 40;
     this.identifiedBy = 'id';
     this.identifiedCol = '';
+    this.valueType = '';
+    this.valueCol = '';
     app.firstDraw();
     app.setupListeners();
   },
@@ -233,15 +235,17 @@ var app = {
     });
     document.getElementById('identified-by').addEventListener('change', function() {
       app.identifiedBy = this.value;
+      app.validateId();
     });
     document.getElementById('identified-col').addEventListener('change', function() {
       app.identifiedCol = this.value;
+      app.validateId();
     });
     document.getElementById('value-type').addEventListener('change', function() {
       console.log('value type changed');
     });
     document.getElementById('value-col').addEventListener('change', function() {
-      console.log('value col changed');
+      app.valueColListener(this);
     });
     document.getElementById('data-scale').addEventListener('change', function() {
       app.dataScaleListener(this);
@@ -299,13 +303,12 @@ var app = {
     });
     d3.select('#data-id-select').attr('style', '');
     d3.select('#data-value-select').attr('style', '');
-    d3.select('#data-scale-container').attr('style', '');
-    d3.select('#data-stats').attr('style', '');
   },
 
   valueColListener: function(valueCol) {
     if (valueCol.value !== 'default') {
-      // TODO compute stuff
+      d3.select('#data-scale-container').attr('style', '');
+      d3.select('#data-stats').attr('style', '');
     }
   },
 
@@ -325,7 +328,30 @@ var app = {
     });
 
     return state.id;
-  }
+  },
+
+  sequentialColorScale: function(steps, lowColor, highColor) {
+
+  },
+
+  validateId: function() {
+    var validated = [];
+    var invalid = [];
+    if (app.identifiedCol !== '' && app.identifiedCol !== 'default') {
+      app.data.forEach(function(d) {
+        var id = d[app.identifiedCol];
+        var match = STATES
+          .map(function(s) {return s[app.identifiedBy];})
+          .find(function(s) {return s == id;});
+        if (match !== undefined) {
+          validated.push(id);
+        } else {
+          invalid.push(id);
+        }
+      });
+      console.log(validated, invalid);
+    }
+  },
 };
 
 // Define increments for data scale
