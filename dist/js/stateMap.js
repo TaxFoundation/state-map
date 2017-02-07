@@ -351,10 +351,12 @@ var app = {
       });
       console.log(validated, invalid);
       if (invalid.length) {
-        d3.select('#data-validation')
+        d3.select('#id-validation-message')
+          .attr('class', 'warning')
           .text('Could not validate: ' + invalid.join(', '));
       } else if (!invalid.length) {
-        d3.select('#data-validation')
+        d3.select('#id-validation-message')
+          .attr('class', 'valid')
           .text('All IDs validated.');
       }
     }

@@ -57,3 +57,19 @@ text.label {
 .state-name {
   font-weight: 700;
 }
+
+.warning {
+  background-color: rgba(255, 0, 0, .3);
+  border: solid 1px red;
+  border-radius: 1rem;
+  padding: 1rem;
+  width: 100%
+}
+
+.valid {
+  background-color: rgba(0, 255, 0, .3);
+  border: solid 1px green;
+  border-radius: 1rem;
+  padding: 1rem;
+  width: 100%
+}
