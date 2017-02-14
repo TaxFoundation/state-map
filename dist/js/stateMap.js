@@ -74,7 +74,6 @@ var LABEL_OFFSETS = { //To preserve position with changes to width and height, s
 };
 
 var INTERPOLATORS = [
-  // These are from d3-scale.
   'Viridis',
   'Inferno',
   'Magma',
@@ -83,7 +82,6 @@ var INTERPOLATORS = [
   'Cool',
   'Rainbow',
   'CubehelixDefault',
-  // These are from d3-scale-chromatic
   'Blues',
   'Greens',
   'Greys',
@@ -126,6 +124,7 @@ var app = {
       max: 100
     };
     this.interpolator = 'Plasma';
+    this.steps = 5;
     app.firstDraw();
     app.setupListeners();
   },
@@ -301,6 +300,29 @@ var app = {
     });
   },
 
+  scaleSelect: function(type) {
+    var scales = d3.select('#color-scales');
+    scales.attr('style', '');
+    scales.selectAll('*').remove();
+
+    var scaleCount = 0;
+    INTERPOLATORS.forEach(function(s) {
+      var scale = scales.append('div')
+        .attr('class', 'scale-row')
+        .attr('data-interpolator', s)
+        .on('click', function(e) { app.interpolator = s; });
+      var theDomain = [0, app.steps - 1];
+
+      for (var i = 0; i < app.steps; i++) {
+        var color = app.sequenceColor(i, theDomain, s);
+        scale.append('div')
+          .attr('class', 'scale-step')
+          .attr('style', 'background-color: ' + color);
+      }
+      scaleCount++;
+    });
+  },
+
   wrap: function(text, width) {
     text.each(function() {
       var text = d3.select(this),
@@ -409,204 +431,21 @@ var app = {
     }
   },
 
-  sequenceColor: function(value) {
-    var theDomain = [app.summaryStats.min, app.summaryStats.max];
+  sequenceColor: function(value, theDomain, interpolation) {
+    var theDomain = theDomain || [app.summaryStats.min, app.summaryStats.max];
     if (app.reverseSequence) {
       theDomain = [app.summaryStats.max, app.summaryStats.min];
     }
+    var interpolation = interpolation || app.interpolator;
 
     var scale = d3.scaleSequential()
       .domain(theDomain)
       .clamp(true)
-      .interpolator(d3['interpolate' + app.interpolator]);
+      .interpolator(d3['interpolate' + interpolation]);
 
     return scale(value);
   },
 };
-
-// Define increments for data scale
-var min = 84, //Floor for the first step
-    mid = 100,
-    max = 116, //Anything above the max is the final step
-    steps = 8, //Final step represents anything at or above max
-    increment = (max - min) / (steps - 1);
-
-// Create distinct colors for each increment based on two base colors
-var colors = [],
-    lowBaseColor = '#FFCE00', //Color applied at the end of the scale with the lowest values
-    midBaseColor = '#FFAA93',
-    highBaseColor = '#FF0068', //Color applied at the end of the scale with the highest values
-    scaleColor = d3.scaleLinear()
-        .domain([0, steps - 1])
-        .range([lowBaseColor, highBaseColor])
-        .interpolate(d3.interpolateHcl); //Don't like the colors you get? Try interpolateHcl or interpolateHsl!
-
-// Create basic legend and add generated colors to the 'colors' array
-// Should replace this with D3.js Axis
-for (var c = 0; c < steps; c++) {
-  colors.push(scaleColor(c));
-}
-
-
-
-
-
-var mapColor = d3.scaleLinear()
-    .domain([min, mid, max])
-    .range([lowBaseColor, midBaseColor, highBaseColor]);
-
-
-
-// var legend = svg.append('g')
-//     .attr('class', 'legend')
-//     .attr('transform', 'translate(0,' + (height - height * 0.1) + ')');
-
-// Set params and queue map files
-// var dataPath = 'data/100-dollar-map.csv',
-//     legendDataType = dataFormat.tens,
-//     tooltipDataType = dataFormat.tens,
-//     observation = 'value';
-
-
-
-// d3.queue()
-//     .defer(d3.json, 'data/us.json')
-//     .defer(d3.csv, dataPath)
-//     .await(ready);
-
-// Map-building functions
-function ready(error, us, data) {
-  if (error) return console.error(error);
-
-  map.selectAll('path')
-      .data(topojson.feature(us, us.objects.states).features)
-  .enter().append('path')
-      .attr('class', function (d) {return 'state' + d.id;})
-      .attr('d', path)
-      .attr('fill', noDataColor)
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 1.5);
-
-  map.selectAll('rect')
-      .data(smallStateRects)
-  .enter().append('rect')
-      .attr('width', function () {return scaleOffset(18, 'width');})
-      .attr('height', function () {return scaleOffset(18, 'height');})
-        .attr('x', function (d) {
-          return scaleOffset((labelOffsets[d.id].rectX + 10), 'width');
-        })
-        .attr('y', function (d) {
-          return scaleOffset((labelOffsets[d.id].rectY - 14), 'height');
-        })
-        .attr('fill', noDataColor)
-        .attr('class', function (d) {return 'state' + d.id;});
-
-  //create group for labels
-  var labelGroups = labels.selectAll('text')
-      .data(topojson.feature(us, us.objects.states).features)
-      .enter().append('g');
-
-  textLabel(labelGroups, 'name', 0);
-  textLabel(labelGroups, 'value', 16);
-
-  data.forEach(function (d) {
-    d3.selectAll('.state' + d.id)
-        .style('fill', mapColor(parseFloat(d[observation])));
-    d3.select('#statevalue' + d.id)
-        .html(legendDataType(d[observation]));
-    d3.select('#statename' + d.id)
-        .html(d.abbr);
-  });
-
-  //drawLegend();
-}
-
-// var adjustment = d3.scaleLinear()
-//                 .domain([0, width])
-//                 .range([0, 150]);
-
-function addTooltip(label, number) {
-  tooltip.transition()
-    .duration(200)
-    .style('opacity', 0.9);
-  tooltip.html(
-    label + ': ' + (number ? tooltipDataType(number) : 'No Data')
-  )
-    .style('left', (d3.event.pageX - adjustment(d3.event.pageX)) + 'px')
-    .style('top', (d3.event.pageY + 50) + 'px');
-}
-
-function drawLegend() {
-  var legendData = [{ color: noDataColor, label: 'No Data' }],
-      legendDomain = [],
-      legendScale,
-      legendAxis;
-
-  for (var i = 0, j = colors.length; i < j; i++) {
-    var fill = colors[i];
-    var label = legendDataType(min + increment * i) + ((i === j - 1) ? '+' : '-' + legendDataType(min + increment * (i + 1)));
-    legendData[i + 1] = { color: fill, label: label, };
-  }
-
-  for (var k = 0, x = legendData.length; k < x; k++) {
-    legendDomain.push(legendData[k].label);
-  }
-
-  legendScale = d3.scale.ordinal()
-      .rangeRoundBands([0, width], 0.2)
-      .domain(legendDomain);
-
-  legendAxis = d3.svg.axis()
-      .scale(legendScale)
-      .orient('bottom');
-
-  legend.call(legendAxis);
-
-  legend.selectAll('rect')
-      .data(legendData)
-  .enter()
-      .append('rect')
-      .attr('x', function (d) {return legendScale(d.label);})
-      .attr('y', -30)
-      .attr('height', 30)
-      .attr('class', 'legend-item')
-      .transition()
-      .duration(700)
-      .attrTween('width', function () {return d3.interpolate(0, legendScale.rangeBand());})
-      .attrTween('fill', function (d) {return d3.interpolate('#fff', d.color);});
-}
-
-
-
-function textLabel(labelGroup, className, yOffset) {
-  labelGroup
-    .append('text')
-    .attr('class', 'state-' + className)
-    .attr('id', function (d) {return 'state' + className + d.id;})
-      .attr('text-anchor', function (d) {
-        if (labelOffsets[d.id] && labelOffsets[d.id].rectX) {
-          return 'end';
-        } else {
-          return 'middle';
-        }
-      })
-      .attr('transform', function(d) {
-        var centroid = path.centroid(d);
-        if (labelOffsets[d.id] && labelOffsets[d.id].rectX) {
-          return 'translate('
-            + labelOffsets[d.id].rectX + ','
-            + (labelOffsets[d.id].rectY + yOffset) + ')';
-        } else if (labelOffsets[d.id]) {
-          var x = Math.floor(centroid[0]) + scaleOffset(labelOffsets[d.id].x, 'width'),
-              y = Math.floor(centroid[1]) + scaleOffset(labelOffsets[d.id].y, 'height');
-          return 'translate(' + x + ',' + (y + yOffset) + ')';
-        } else if (d.id !== 72 && d.id !== 78) {
-          var x = Math.floor(centroid[0]),
-              y = Math.floor(centroid[1]);
-          return 'translate(' + x + ',' + (y + yOffset) + ')';
-        }
-      });
-}
 
 (function() {
   app.init(app);

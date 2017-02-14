@@ -61,7 +61,7 @@ text.label {
 .warning {
   background-color: rgba(255, 0, 0, .3);
   border: solid 1px red;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   padding: 1rem;
   width: 100%
 }
@@ -69,7 +69,28 @@ text.label {
 .valid {
   background-color: rgba(0, 255, 0, .3);
   border: solid 1px green;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   padding: 1rem;
   width: 100%
+}
+
+.scale-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.scale-row {
+  border: 1px solid #d1d1d1;
+  cursor: pointer;
+  display: flex;
+  flex: 1 0 50%;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 5px;
+}
+
+.scale-step {
+  flex: 1 0 auto;
+  height: 25px;
 }
