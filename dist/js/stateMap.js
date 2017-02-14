@@ -73,6 +73,37 @@ var LABEL_OFFSETS = { //To preserve position with changes to width and height, s
   55: { x: -3, y: -10 },
 };
 
+var INTERPOLATORS = [
+  // These are from d3-scale.
+  'Viridis',
+  'Inferno',
+  'Magma',
+  'Plasma',
+  'Warm',
+  'Cool',
+  'Rainbow',
+  'CubehelixDefault',
+  // These are from d3-scale-chromatic
+  'Blues',
+  'Greens',
+  'Greys',
+  'Oranges',
+  'Purples',
+  'Reds',
+  'BuGn',
+  'BuPu',
+  'GnBu',
+  'OrRd',
+  'PuBuGn',
+  'PuBu',
+  'PuRd',
+  'RdPu',
+  'YlGnBu',
+  'YlGn',
+  'YlOrBr',
+  'YlOrRd'
+];
+
 var app = {
   init: function() {
     this.height = 820;
@@ -94,6 +125,7 @@ var app = {
       mid: 50,
       max: 100
     };
+    this.interpolator = 'Plasma';
     app.firstDraw();
     app.setupListeners();
   },
@@ -386,7 +418,7 @@ var app = {
     var scale = d3.scaleSequential()
       .domain(theDomain)
       .clamp(true)
-      .interpolator(d3.interpolateRainbow);
+      .interpolator(d3['interpolate' + app.interpolator]);
 
     return scale(value);
   },
