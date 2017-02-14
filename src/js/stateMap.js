@@ -1,7 +1,5 @@
 'use strict'
 
-var DATA_PATH = 'data/data.csv';
-
 var STATES = [
   { id: 1, abbr: 'AL', name: 'Alabama' },
   { id: 2, abbr: 'AK', name: 'Alaska' },
@@ -90,6 +88,12 @@ var app = {
     this.identifiedCol = '';
     this.valueType = '';
     this.valueCol = '';
+    this.reverseSequence = false;
+    this.summaryStats = {
+      min: 0,
+      mid: 50,
+      max: 100
+    };
     app.firstDraw();
     app.setupListeners();
   },
@@ -188,13 +192,14 @@ var app = {
 
         var sideRects = 0;
         SIDE_RECT_STATES.forEach(function(s) {
+          console.log(s);
           map.append('rect')
             .attr('x', app.sideRectXStart)
             .attr('y', app.sideRectYStart + (app.sideRectOffset * sideRects))
             .attr('width', 12)
             .attr('height', 12)
             .attr('fill', app.noDataColor)
-            .attr('class', function(s) { return 'state' + s;});
+            .attr('class', function() { return 'state' + s; });
 
           d3.select('.labels' + s)
             .attr('transform', function(s) {
@@ -215,7 +220,9 @@ var app = {
 
   redraw: function() {
     app.data.forEach(function(d) {
-      d3.select('.state' + d.id)
+      var state = app.getFipsId(app.identifiedBy, d[app.identifiedCol]);
+      console.log(state);
+      d3.selectAll('.state' + state)
         .attr('fill', '#000000'); // TODO replace with color scale and values
     });
   },
@@ -327,11 +334,7 @@ var app = {
       return s[identifiedBy] == value;
     });
 
-    return state.id;
-  },
-
-  sequentialColorScale: function(steps, lowColor, highColor) {
-
+    return state[0].id;
   },
 
   validateId: function() {
@@ -349,7 +352,7 @@ var app = {
           invalid.push(id);
         }
       });
-      console.log(validated, invalid);
+
       if (invalid.length) {
         d3.select('#id-validation-message')
           .attr('class', 'warning')
@@ -360,6 +363,19 @@ var app = {
           .text('All IDs validated.');
       }
     }
+  },
+
+  sequenceColor: function() {
+    var theDomain = [app.summaryStats.min, app.summaryStats.max];
+    if (app.reverseSequence) {
+      theDomain = [app.summaryStats.max, app.summaryStats.min];
+    }
+
+    var scale = d3.scaleSequential(d3.interpolateVirdis)
+      .domain(thedomain)
+      .clamp(true);
+
+    return scale;
   },
 };
 
