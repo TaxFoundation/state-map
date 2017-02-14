@@ -150,7 +150,7 @@ var app = {
         map.selectAll('path')
           .data(topojson.feature(data, data.objects.states).features)
         .enter().append('path')
-          .attr('class', function (d) {return 'state' + d.id;})
+          .attr('class', function (d) {return 'state state' + d.id;})
           .attr('d', path)
           .attr('fill', app.noDataColor)
           .attr('stroke', '#fff')
@@ -159,7 +159,7 @@ var app = {
         labels.selectAll('g')
           .data(topojson.feature(data, data.objects.states).features)
         .enter().append('g')
-          .attr('class', function(d) {return 'labels' + d.id;})
+          .attr('class', function(d) {return 'labels labels' + d.id;})
           .attr('transform', function(d) {
             var centroid = path.centroid(d);
             if (centroid[0] && centroid[1]) {
@@ -199,7 +199,7 @@ var app = {
             .attr('width', 12)
             .attr('height', 12)
             .attr('fill', app.noDataColor)
-            .attr('class', function() { return 'state' + s; });
+            .attr('class', function() { return 'state state' + s; });
 
           d3.select('.labels' + s)
             .attr('transform', function(s) {
@@ -219,11 +219,21 @@ var app = {
   },
 
   redraw: function() {
+    var cleanData = [];
+
     app.data.forEach(function(d) {
-      var state = app.getFipsId(app.identifiedBy, d[app.identifiedCol]);
-      console.log(state);
-      d3.selectAll('.state' + state)
-        .attr('fill', '#000000'); // TODO replace with color scale and values
+      var fips = app.getFipsId(app.identifiedBy, d[app.identifiedCol]);
+      var value = d[app.valueCol];
+      cleanData.push({
+        id: fips,
+        value: value
+      });
+    });
+
+    cleanData.forEach(function(d) {
+      console.log(d.value, app.sequenceColor(d.value));
+      d3.selectAll('.state' + d.id)
+        .attr('fill', app.sequenceColor(d.value));
     });
   },
 
@@ -316,6 +326,8 @@ var app = {
     if (valueCol.value !== 'default') {
       d3.select('#data-scale-container').attr('style', '');
       d3.select('#data-stats').attr('style', '');
+
+      app.valueCol = valueCol.value;
     }
   },
 
@@ -365,17 +377,18 @@ var app = {
     }
   },
 
-  sequenceColor: function() {
+  sequenceColor: function(value) {
     var theDomain = [app.summaryStats.min, app.summaryStats.max];
     if (app.reverseSequence) {
       theDomain = [app.summaryStats.max, app.summaryStats.min];
     }
 
-    var scale = d3.scaleSequential(d3.interpolateVirdis)
-      .domain(thedomain)
-      .clamp(true);
+    var scale = d3.scaleSequential()
+      .domain(theDomain)
+      .clamp(true)
+      .interpolator(d3.interpolateRainbow);
 
-    return scale;
+    return scale(value);
   },
 };
 
