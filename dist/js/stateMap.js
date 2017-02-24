@@ -73,46 +73,19 @@ var LABEL_OFFSETS = { //To preserve position with changes to width and height, s
   55: { x: -3, y: -10 },
 };
 
-var SEQUENTIAL_INTERPOLATORS = [
-  'Viridis',
-  'Inferno',
-  'Magma',
-  'Plasma',
-  'Warm',
-  'Cool',
-  'Rainbow',
-  'CubehelixDefault',
-  'Blues',
-  'Greens',
-  'Greys',
-  'Oranges',
-  'Purples',
-  'Reds',
-  'BuGn',
-  'BuPu',
-  'GnBu',
-  'OrRd',
-  'PuBuGn',
-  'PuBu',
-  'PuRd',
-  'RdPu',
-  'YlGnBu',
-  'YlGn',
-  'YlOrBr',
-  'YlOrRd'
-];
+var colors = {
+  sequential: [
+    {}
+  ],
 
-var DIVERGENT_INTERPOLATORS = [
-  'BrBg',
-  'PRGn',
-  'PiYg',
-  'PuOr',
-  'RdBu',
-  'RdGy',
-  'Rdy|Bu',
-  'Rdy|Gn',
-  'Spectral'
-];
+  divergent: [
+    {}
+  ],
+
+  qualitative: [
+    {}
+  ]
+};
 
 var app = {
   init: function() {
@@ -274,7 +247,7 @@ var app = {
     });
 
     cleanData.forEach(function(d) {
-      console.log(d.value, app.sequenceColor(d.value));
+      console.log(d.value, app.divergentColor(d.value));
       d3.selectAll('.state' + d.id)
         .attr('fill', app.sequenceColor(d.value));
     });
@@ -334,7 +307,6 @@ var app = {
     theInterpolators.forEach(function(s) {
       var scale = scales.append('div')
         .attr('class', 'scale-row')
-        .attr('data-interpolator', s)
         .on('click', function(e) { app.interpolator = s; });
       var theDomain = [0, app.steps - 1];
 
@@ -455,19 +427,20 @@ var app = {
     }
   },
 
-  sequenceColor: function(value, theDomain, interpolation) {
+  sequenceColor: function(value, theDomain, interpolation, steps) {
+    // value is the datapoint to be given a color
+    // theDomain is an array with, at minimum, the min and max of the observations
+    // interpolation is an array of colors to be used in the scale
+    // steps is the number of steps to be used in creating the color breaks
     var theDomain = theDomain || [app.summaryStats.min, app.summaryStats.max];
     if (app.reverseSequence) {
       theDomain = [app.summaryStats.max, app.summaryStats.min];
     }
-    var interpolation = interpolation || app.interpolator;
+    var theInterpolation = interpolation || app.interpolator;
 
-    var scale = d3.scaleSequential()
-      .domain(theDomain)
-      .clamp(true)
-      .interpolator(d3['interpolate' + interpolation]);
+    var scale = chroma.scale(theInterpolation).domain(theDomain).classes(steps);
 
-    return scale(value);
+    return scale(value).hex();
   },
 
   divergentColor: function(value, theDomain, interpolation) {
@@ -475,13 +448,12 @@ var app = {
     if (app.reverseSequence) {
       theDomain = [app.summaryStats.max, app.summaryStats.mid, app.summaryStats.min];
     }
-    var interpolation = interpolation || app.interpolator;
+    var theInterpolation = interpolation || app.interpolator;
+    console.log(theInterpolation);
 
     var scale = d3.scaleSequential()
       .domain(theDomain)
-      .clamp(true)
-      .interpolator(d3['interpolate' + interpolation]);
-
+      .clamp(true);
     return scale(value);
   },
 };
