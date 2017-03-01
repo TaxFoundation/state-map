@@ -1,6 +1,4 @@
-'use strict'
-
-var STATES = [
+const STATES = [
   { id: 1, abbr: 'AL', name: 'Alabama' },
   { id: 2, abbr: 'AK', name: 'Alaska' },
   { id: 4, abbr: 'AZ', name: 'Arizona' },
@@ -54,10 +52,10 @@ var STATES = [
   { id: 56, abbr: 'WY', name: 'Wyoming' },
 ];
 
-var TOP_RECT_STATES = [33, 50];
-var SIDE_RECT_STATES = [9, 10, 11, 24, 25, 34, 44, 54];
-var LABEL_OFFSETS = { //To preserve position with changes to width and height, set all values to percentage * width or height
-  2:  { x: 5, y: -10 },
+const TOP_RECT_STATES = [33, 50];
+const SIDE_RECT_STATES = [9, 10, 11, 24, 25, 34, 44, 54];
+const LABEL_OFFSETS = {
+  2: { x: 5, y: -10 },
   12: { x: 25, y: 20 },
   13: { x: 5, y: 5 },
   15: { x: 0, y: 0 },
@@ -73,22 +71,22 @@ var LABEL_OFFSETS = { //To preserve position with changes to width and height, s
   55: { x: -3, y: -10 },
 };
 
-var colors = {
+const colors = {
   sequential: [
-    {}
+    {},
   ],
 
   divergent: [
-    {}
+    {},
   ],
 
   qualitative: [
-    {}
-  ]
+    {},
+  ],
 };
 
 var app = {
-  init: function() {
+  init() {
     this.height = 820;
     this.width = 960;
     this.borderColor = '#ffffff';
@@ -106,7 +104,7 @@ var app = {
     this.summaryStats = {
       min: 0,
       mid: 50,
-      max: 100
+      max: 100,
     };
     this.interpolator = 'Plasma';
     this.steps = 5;
@@ -114,37 +112,37 @@ var app = {
     app.setupListeners();
   },
 
-  firstDraw: function() {
-    var svg = d3.select('#map-container').append('svg')
+  firstDraw() {
+    const svg = d3.select('#map-container').append('svg')
       .attr('id', 'the-svg')
       .attr('width', '100%')
-      .attr('viewBox', '0 0 ' + app.width + ' ' + app.height);
+      .attr('viewBox', `0 0 ${app.width} ${app.height}`);
 
-    var projection = d3.geoAlbersUsa()
+    const projection = d3.geoAlbersUsa()
       .scale(app.width * 1.3)
       .translate([app.width / 2, app.height - app.height * 0.6]);
 
-    var path = d3.geoPath()
+    const path = d3.geoPath()
       .projection(projection);
 
-    var titles = svg.append('g')
+    const titles = svg.append('g')
       .attr('class', 'titles');
 
-    var title = titles.append('text')
+    const title = titles.append('text')
       .attr('class', 'title')
       .attr('style', 'font-family: \'Lato\', Arial, sans-serif; font-size: 32px; font-style: normal; font-weight:700')
       .attr('x', 16)
       .attr('y', 37)
       .text('Title');
 
-    var subtitle = titles.append('text')
+    const subtitle = titles.append('text')
       .attr('class', 'subtitle')
       .attr('style', 'font-family: \'Lato\', Arial, sans-serif; font-size: 18px; font-style: italic; font-weight:400')
       .attr('x', 19)
       .attr('y', 63)
       .text('Subtitle');
 
-    var notes = svg.append('g')
+    const notes = svg.append('g')
       .attr('class', 'notes')
       .append('text')
       .attr('class', 'note')
@@ -152,21 +150,21 @@ var app = {
       .attr('y', 685)
       .text('Notes and Source');
 
-    var map = svg.append('g')
+    const map = svg.append('g')
       .attr('class', 'states')
       .attr('transform', 'translate(0, 45)');
 
-    var labels = svg.append('g')
+    const labels = svg.append('g')
       .attr('class', 'labels')
       .attr('transform', 'translate(0, 45)');
 
     d3.queue()
       .defer(d3.json, 'data/us.json')
-      .await(function(error, data) {
+      .await((error, data) => {
         map.selectAll('path')
           .data(topojson.feature(data, data.objects.states).features)
         .enter().append('path')
-          .attr('class', function (d) {return 'state state' + d.id;})
+          .attr('class', d => `state state${d.id}`)
           .attr('d', path)
           .attr('fill', app.noDataColor)
           .attr('stroke', '#fff')
@@ -175,39 +173,34 @@ var app = {
         labels.selectAll('g')
           .data(topojson.feature(data, data.objects.states).features)
         .enter().append('g')
-          .attr('class', function(d) {return 'labels labels' + d.id;})
-          .attr('transform', function(d) {
-            var centroid = path.centroid(d);
+          .attr('class', d => `labels labels${d.id}`)
+          .attr('transform', (d) => {
+            const centroid = path.centroid(d);
             if (centroid[0] && centroid[1]) {
               if (LABEL_OFFSETS[d.id]) {
-                return 'translate('
-                + (centroid[0] + LABEL_OFFSETS[d.id].x) + ','
-                + (centroid[1] + LABEL_OFFSETS[d.id].y) + ')';
-              } else {
-                return 'translate(' + centroid[0] + ',' + centroid[1] + ')';
+                return `translate(${
+                 centroid[0] + LABEL_OFFSETS[d.id].x},${
+                 centroid[1] + LABEL_OFFSETS[d.id].y})`;
               }
-            } else {
-              return 'translate(0,0)';
+              return `translate(${centroid[0]},${centroid[1]})`;
             }
+            return 'translate(0,0)';
           })
           .append('text')
-          .attr('class', function(d) {return 'abbr' + d.id;})
+          .attr('class', d => `abbr${d.id}`)
           .attr('text-anchor', 'middle')
           .attr('style', 'font-family: \'Lato\', Arial, sans-serif; font-size: 14px; font-style: normal; font-weight:700')
-          .text(function(d) {
-            var state = STATES.filter(function(s) {
-              return s.id == d.id;
-            });
+          .text((d) => {
+            const state = STATES.filter(s => s.id == d.id);
 
             if (state[0]) {
               return state[0].abbr;
-            } else {
-              return '';
             }
+            return '';
           });
 
-        var sideRects = 0;
-        SIDE_RECT_STATES.forEach(function(s) {
+        let sideRects = 0;
+        SIDE_RECT_STATES.forEach((s) => {
           console.log(s);
           map.append('rect')
             .attr('x', app.sideRectXStart)
@@ -215,18 +208,16 @@ var app = {
             .attr('width', 12)
             .attr('height', 12)
             .attr('fill', app.noDataColor)
-            .attr('class', function() { return 'state state' + s; });
+            .attr('class', () => `state state${s}`);
 
-          d3.select('.labels' + s)
-            .attr('transform', function(s) {
-              return 'translate('
-              + (app.sideRectXStart - 6)
-              + ','
-              + ((app.sideRectYStart + 11) + (app.sideRectOffset * sideRects))
-              + ')';
-            });
+          d3.select(`.labels${s}`)
+            .attr('transform', s => `translate(${
+               app.sideRectXStart - 6
+               },${
+               (app.sideRectYStart + 11) + (app.sideRectOffset * sideRects)
+               })`);
 
-          d3.select('.abbr' + s)
+          d3.select(`.abbr${s}`)
             .attr('text-anchor', 'end');
 
           sideRects++;
@@ -234,66 +225,66 @@ var app = {
       });
   },
 
-  redraw: function() {
-    var cleanData = [];
+  redraw() {
+    const cleanData = [];
 
-    app.data.forEach(function(d) {
-      var fips = app.getFipsId(app.identifiedBy, d[app.identifiedCol]);
-      var value = d[app.valueCol];
+    app.data.forEach((d) => {
+      const fips = app.getFipsId(app.identifiedBy, d[app.identifiedCol]);
+      const value = d[app.valueCol];
       cleanData.push({
         id: fips,
-        value: value
+        value,
       });
     });
 
-    cleanData.forEach(function(d) {
+    cleanData.forEach((d) => {
       console.log(d.value, app.divergentColor(d.value));
-      d3.selectAll('.state' + d.id)
+      d3.selectAll(`.state${d.id}`)
         .attr('fill', app.sequenceColor(d.value));
     });
   },
 
-  setupListeners: function() {
-    document.getElementById('title-text').addEventListener('input', function() {
+  setupListeners() {
+    document.getElementById('title-text').addEventListener('input', function () {
       d3.select('.title').text(this.value);
     });
-    document.getElementById('subtitle-text').addEventListener('input', function() {
+    document.getElementById('subtitle-text').addEventListener('input', function () {
       d3.select('.subtitle').text(this.value);
     });
-    document.getElementById('notes-text').addEventListener('input', function() {
+    document.getElementById('notes-text').addEventListener('input', function () {
       d3.select('.note').text(this.value).call(app.wrap, 550);
     });
-    document.getElementById('data-file').addEventListener('change', function() {
+    document.getElementById('data-file').addEventListener('change', function () {
       app.readFile(this.files[0], app.parseFile);
     });
-    document.getElementById('identified-by').addEventListener('change', function() {
+    document.getElementById('identified-by').addEventListener('change', function () {
       app.identifiedBy = this.value;
       app.validateId();
     });
-    document.getElementById('identified-col').addEventListener('change', function() {
+    document.getElementById('identified-col').addEventListener('change', function () {
       app.identifiedCol = this.value;
       app.validateId();
     });
-    document.getElementById('value-type').addEventListener('change', function() {
+    document.getElementById('value-type').addEventListener('change', () => {
       console.log('value type changed');
     });
-    document.getElementById('value-col').addEventListener('change', function() {
+    document.getElementById('value-col').addEventListener('change', function () {
       app.valueColListener(this);
     });
-    document.getElementById('data-scale').addEventListener('change', function() {
+    document.getElementById('data-scale').addEventListener('change', function () {
       app.dataScaleListener(this);
     });
   },
 
-  scaleSelect: function(scaleType) {
-    var scales = d3.select('#color-scales');
+  scaleSelect(scaleType) {
+    const scales = d3.select('#color-scales');
     scales.attr('style', '');
     scales.selectAll('*').remove();
 
-    var theInterpolators;
-    var theScale;
+    let theInterpolators;
+    let theScale;
 
-    switch(scaleType) {
+    switch (scaleType) {
       case 'sequential':
         theInterpolators = SEQUENTIAL_INTERPOLATORS;
         theScale = app.sequenceColor;
@@ -304,32 +295,32 @@ var app = {
         break;
     }
 
-    theInterpolators.forEach(function(s) {
-      var scale = scales.append('div')
+    theInterpolators.forEach((s) => {
+      const scale = scales.append('div')
         .attr('class', 'scale-row')
-        .on('click', function(e) { app.interpolator = s; });
-      var theDomain = [0, app.steps - 1];
+        .on('click', (e) => { app.interpolator = s; });
+      const theDomain = [0, app.steps - 1];
 
-      for (var i = 0; i < app.steps; i++) {
-        var color = theScale(i, theDomain, s);
+      for (let i = 0; i < app.steps; i++) {
+        const color = theScale(i, theDomain, s);
         scale.append('div')
           .attr('class', 'scale-step')
-          .attr('style', 'background-color: ' + color);
+          .attr('style', `background-color: ${color}`);
       }
     });
   },
 
-  wrap: function(text, width) {
-    text.each(function() {
-      var text = d3.select(this),
-          words = text.text().split(/\s+/).reverse(),
-          word,
-          line = [],
-          lineNumber = 0,
-          lineHeight = 16, // ems
-          y = text.attr('y'),
-          dy = parseFloat(text.attr('dy')) || 0,
-          tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy);
+  wrap(text, width) {
+    text.each(function () {
+      let text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 16, // ems
+        y = text.attr('y'),
+        dy = parseFloat(text.attr('dy')) || 0,
+        tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy);
       while (word = words.pop()) {
         line.push(word);
         tspan.text(line.join(' '));
@@ -343,23 +334,23 @@ var app = {
     });
   },
 
-  readFile: function(file, callback) {
-    var reader = new FileReader();
-    reader.onload = function(event) {
+  readFile(file, callback) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
       if (file.type != 'text/csv') {
-        alert('This file is not a comma-separated values file. This program only reads CSV files.')
+        alert('This file is not a comma-separated values file. This program only reads CSV files.');
       } else {
         callback(event.target.result);
       }
-    }
+    };
 
     reader.readAsText(file);
   },
 
-  parseFile: function(rawData) {
+  parseFile(rawData) {
     app.data = d3.csvParse(rawData);
 
-    app.data.columns.forEach(function(d) {
+    app.data.columns.forEach((d) => {
       d3.select('#identified-col').append('option')
         .attr('value', d)
         .text(d);
@@ -372,7 +363,7 @@ var app = {
     d3.select('#data-value-select').attr('style', '');
   },
 
-  valueColListener: function(valueCol) {
+  valueColListener(valueCol) {
     if (valueCol.value !== 'default') {
       d3.select('#data-scale-container').attr('style', '');
       d3.select('#data-stats').attr('style', '');
@@ -381,8 +372,8 @@ var app = {
     }
   },
 
-  dataScaleListener: function(dataScale) {
-    var midValue = document.getElementById('mid-value');
+  dataScaleListener(dataScale) {
+    const midValue = document.getElementById('mid-value');
     if (dataScale.value !== 'divergent') {
       midValue.disabled = true;
     } else {
@@ -390,24 +381,22 @@ var app = {
     }
   },
 
-  getFipsId: function(identifiedBy, value) {
+  getFipsId(identifiedBy, value) {
     // Filter array of states by identifiedBy and get FIPS
-    var state = STATES.filter(function(s) {
-      return s[identifiedBy] == value;
-    });
+    const state = STATES.filter(s => s[identifiedBy] == value);
 
     return state[0].id;
   },
 
-  validateId: function() {
-    var validated = [];
-    var invalid = [];
+  validateId() {
+    const validated = [];
+    const invalid = [];
     if (app.identifiedCol !== '' && app.identifiedCol !== 'default') {
-      app.data.forEach(function(d) {
-        var id = d[app.identifiedCol];
-        var match = STATES
-          .map(function(s) {return s[app.identifiedBy];})
-          .find(function(s) {return s == id;});
+      app.data.forEach((d) => {
+        const id = d[app.identifiedCol];
+        const match = STATES
+          .map(s => s[app.identifiedBy])
+          .find(s => s == id);
         if (match !== undefined) {
           validated.push(id);
         } else {
@@ -418,7 +407,7 @@ var app = {
       if (invalid.length) {
         d3.select('#id-validation-message')
           .attr('class', 'warning')
-          .text('Could not validate: ' + invalid.join(', '));
+          .text(`Could not validate: ${invalid.join(', ')}`);
       } else if (!invalid.length) {
         d3.select('#id-validation-message')
           .attr('class', 'valid')
@@ -427,7 +416,7 @@ var app = {
     }
   },
 
-  sequenceColor: function(value, theDomain, interpolation, steps) {
+  sequenceColor(value, theDomain, interpolation, steps) {
     // value is the datapoint to be given a color
     // theDomain is an array with, at minimum, the min and max of the observations
     // interpolation is an array of colors to be used in the scale
@@ -436,28 +425,28 @@ var app = {
     if (app.reverseSequence) {
       theDomain = [app.summaryStats.max, app.summaryStats.min];
     }
-    var theInterpolation = interpolation || app.interpolator;
+    const theInterpolation = interpolation || app.interpolator;
 
-    var scale = chroma.scale(theInterpolation).domain(theDomain).classes(steps);
+    const scale = chroma.scale(theInterpolation).domain(theDomain).classes(steps);
 
     return scale(value).hex();
   },
 
-  divergentColor: function(value, theDomain, interpolation) {
+  divergentColor(value, theDomain, interpolation) {
     var theDomain = theDomain || [app.summaryStats.min, app.summaryStats.mid, app.summaryStats.max];
     if (app.reverseSequence) {
       theDomain = [app.summaryStats.max, app.summaryStats.mid, app.summaryStats.min];
     }
-    var theInterpolation = interpolation || app.interpolator;
+    const theInterpolation = interpolation || app.interpolator;
     console.log(theInterpolation);
 
-    var scale = d3.scaleSequential()
+    const scale = d3.scaleSequential()
       .domain(theDomain)
       .clamp(true);
     return scale(value);
   },
 };
 
-(function() {
+(function () {
   app.init(app);
-})();
+}());
