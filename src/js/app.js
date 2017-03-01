@@ -1,58 +1,5 @@
 /* globals d3 chroma */
-
-const STATES = [
-  { id: 1, abbr: 'AL', name: 'Alabama' },
-  { id: 2, abbr: 'AK', name: 'Alaska' },
-  { id: 4, abbr: 'AZ', name: 'Arizona' },
-  { id: 5, abbr: 'AR', name: 'Arkansas' },
-  { id: 6, abbr: 'CA', name: 'California' },
-  { id: 8, abbr: 'CO', name: 'Colorado' },
-  { id: 9, abbr: 'CT', name: 'Connecticut' },
-  { id: 10, abbr: 'DE', name: 'Delaware' },
-  { id: 11, abbr: 'DC', name: 'District of Columbia' },
-  { id: 12, abbr: 'FL', name: 'Florida' },
-  { id: 13, abbr: 'GA', name: 'Georgia' },
-  { id: 15, abbr: 'HI', name: 'Hawaii' },
-  { id: 16, abbr: 'ID', name: 'Idaho' },
-  { id: 17, abbr: 'IL', name: 'Illinois' },
-  { id: 18, abbr: 'IN', name: 'Indiana' },
-  { id: 19, abbr: 'IA', name: 'Iowa' },
-  { id: 20, abbr: 'KS', name: 'Kansas' },
-  { id: 21, abbr: 'KY', name: 'Kentucky' },
-  { id: 22, abbr: 'LA', name: 'Louisiana' },
-  { id: 23, abbr: 'ME', name: 'Maine' },
-  { id: 24, abbr: 'MD', name: 'Maryland' },
-  { id: 25, abbr: 'MA', name: 'Massachusetts' },
-  { id: 26, abbr: 'MI', name: 'Michigan' },
-  { id: 27, abbr: 'MN', name: 'Minnesota' },
-  { id: 28, abbr: 'MS', name: 'Mississippi' },
-  { id: 29, abbr: 'MO', name: 'Missouri' },
-  { id: 30, abbr: 'MT', name: 'Montana' },
-  { id: 31, abbr: 'NE', name: 'Nebraska' },
-  { id: 32, abbr: 'NV', name: 'Nevada' },
-  { id: 33, abbr: 'NH', name: 'New Hampshire' },
-  { id: 34, abbr: 'NJ', name: 'New Jersey' },
-  { id: 35, abbr: 'NM', name: 'New Mexico' },
-  { id: 36, abbr: 'NY', name: 'New York' },
-  { id: 37, abbr: 'NC', name: 'North Carolina' },
-  { id: 38, abbr: 'ND', name: 'North Dakota' },
-  { id: 39, abbr: 'OH', name: 'Ohio' },
-  { id: 40, abbr: 'OK', name: 'Oklahoma' },
-  { id: 41, abbr: 'OR', name: 'Oregon' },
-  { id: 42, abbr: 'PA', name: 'Pennsylvania' },
-  { id: 44, abbr: 'RI', name: 'Rhode Island' },
-  { id: 45, abbr: 'SC', name: 'South Carolina' },
-  { id: 46, abbr: 'SD', name: 'South Dakota' },
-  { id: 47, abbr: 'TN', name: 'Tennessee' },
-  { id: 48, abbr: 'TX', name: 'Texas' },
-  { id: 49, abbr: 'UT', name: 'Utah' },
-  { id: 50, abbr: 'VT', name: 'Vermont' },
-  { id: 51, abbr: 'VA', name: 'Virginia' },
-  { id: 53, abbr: 'WA', name: 'Washington' },
-  { id: 54, abbr: 'WV', name: 'West Virginia' },
-  { id: 55, abbr: 'WI', name: 'Wisconsin' },
-  { id: 56, abbr: 'WY', name: 'Wyoming' },
-];
+import STATES from './stateList.js';
 
 const TOP_RECT_STATES = [33, 50];
 const SIDE_RECT_STATES = [9, 10, 11, 24, 25, 34, 44, 54];
@@ -87,7 +34,7 @@ const colors = {
   ],
 };
 
-var app = {
+const app = {
   init() {
     this.height = 820;
     this.width = 960;
@@ -247,33 +194,35 @@ var app = {
   },
 
   setupListeners() {
-    document.getElementById('title-text').addEventListener('input', function() {
+    document.getElementById('title-text').addEventListener('input', () => {
       d3.select('.title').text(this.value);
     });
-    document.getElementById('subtitle-text').addEventListener('input', function() {
+    document.getElementById('subtitle-text').addEventListener('input', () => {
       d3.select('.subtitle').text(this.value);
     });
-    document.getElementById('notes-text').addEventListener('input', function() {
-      d3.select('.note').text(this.value).call(app.wrap, 550);
+    document.getElementById('notes-text').addEventListener('input', () => {
+      d3.select('.note')
+        .text(this.value)
+        .call(app.wrap, 550);
     });
-    document.getElementById('data-file').addEventListener('change', function() {
+    document.getElementById('data-file').addEventListener('change', () => {
       app.readFile(this.files[0], app.parseFile);
     });
-    document.getElementById('identified-by').addEventListener('change', function() {
+    document.getElementById('identified-by').addEventListener('change', () => {
       app.identifiedBy = this.value;
       app.validateId();
     });
-    document.getElementById('identified-col').addEventListener('change', function() {
+    document.getElementById('identified-col').addEventListener('change', () => {
       app.identifiedCol = this.value;
       app.validateId();
     });
     document.getElementById('value-type').addEventListener('change', () => {
       console.log('value type changed');
     });
-    document.getElementById('value-col').addEventListener('change', function() {
+    document.getElementById('value-col').addEventListener('change', () => {
       app.valueColListener(this);
     });
-    document.getElementById('data-scale').addEventListener('change', function() {
+    document.getElementById('data-scale').addEventListener('change', () => {
       app.dataScaleListener(this);
     });
   },
@@ -313,16 +262,21 @@ var app = {
   },
 
   wrap(text, width) {
-    text.each(function() {
-      let text = d3.select(this),
-        words = text.text().split(/\s+/).reverse(),
-        word,
+    text.each(() => {
+      const theText = d3.select(this),
+        words = theText.text()
+          .split(/\s+/)
+          .reverse(),
+        lineHeight = 16;
+      let word = '',
         line = [],
         lineNumber = 0,
-        lineHeight = 16, // ems
-        y = text.attr('y'),
-        dy = parseFloat(text.attr('dy')) || 0,
-        tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy);
+        y = theText.attr('y'),
+        dy = parseFloat(theText.attr('dy')) || 0,
+        tspan = theText.text(null).append('tspan')
+          .attr('x', 0)
+          .attr('y', y)
+          .attr('dy', dy);
       while (word = words.pop()) {
         line.push(word);
         tspan.text(line.join(' '));
@@ -330,7 +284,11 @@ var app = {
           line.pop();
           tspan.text(line.join(' '));
           line = [word];
-          tspan = text.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy).text(word);
+          tspan = theText.append('tspan')
+            .attr('x', 0)
+            .attr('y', y)
+            .attr('dy', ++lineNumber * lineHeight + dy)
+            .text(word);
         }
       }
     });
@@ -338,8 +296,8 @@ var app = {
 
   readFile(file, callback) {
     const reader = new FileReader();
-    reader.onload = function (event) {
-      if (file.type != 'text/csv') {
+    reader.onload = (event) => {
+      if (file.type !== 'text/csv') {
         alert('This file is not a comma-separated values file. This program only reads CSV files.');
       } else {
         callback(event.target.result);
@@ -385,7 +343,7 @@ var app = {
 
   getFipsId(identifiedBy, value) {
     // Filter array of states by identifiedBy and get FIPS
-    const state = STATES.filter(s => s[identifiedBy] == value);
+    const state = STATES.filter(s => s[identifiedBy] === value);
 
     return state[0].id;
   },
@@ -398,7 +356,7 @@ var app = {
         const id = d[app.identifiedCol];
         const match = STATES
           .map(s => s[app.identifiedBy])
-          .find(s => s == id);
+          .find(s => s === id);
         if (match !== undefined) {
           validated.push(id);
         } else {
@@ -429,7 +387,9 @@ var app = {
     }
     const theInterpolation = interpolation || app.interpolator;
 
-    const scale = chroma.scale(theInterpolation).domain(theDomain).classes(steps);
+    const scale = chroma.scale(theInterpolation)
+      .domain(theDomain)
+      .classes(steps);
 
     return scale(value).hex();
   },
@@ -449,6 +409,6 @@ var app = {
   },
 };
 
-(function() {
+(() => {
   app.init(app);
-}());
+})();
