@@ -6,7 +6,9 @@
   },
   "extends": "airbnb",
   "rules": {
+    "newline-per-chained-call": [2, { "ignoreChainWithDepth": 2 }],
     "no-console": 1,
+    "one-var": 0,
     "space-before-function-paren": 0
   }
 }
