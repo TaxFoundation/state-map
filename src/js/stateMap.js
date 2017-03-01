@@ -1,3 +1,5 @@
+/* globals d3 chroma */
+
 const STATES = [
   { id: 1, abbr: 'AL', name: 'Alabama' },
   { id: 2, abbr: 'AK', name: 'Alaska' },
@@ -245,33 +247,33 @@ var app = {
   },
 
   setupListeners() {
-    document.getElementById('title-text').addEventListener('input', function () {
+    document.getElementById('title-text').addEventListener('input', function() {
       d3.select('.title').text(this.value);
     });
-    document.getElementById('subtitle-text').addEventListener('input', function () {
+    document.getElementById('subtitle-text').addEventListener('input', function() {
       d3.select('.subtitle').text(this.value);
     });
-    document.getElementById('notes-text').addEventListener('input', function () {
+    document.getElementById('notes-text').addEventListener('input', function() {
       d3.select('.note').text(this.value).call(app.wrap, 550);
     });
-    document.getElementById('data-file').addEventListener('change', function () {
+    document.getElementById('data-file').addEventListener('change', function() {
       app.readFile(this.files[0], app.parseFile);
     });
-    document.getElementById('identified-by').addEventListener('change', function () {
+    document.getElementById('identified-by').addEventListener('change', function() {
       app.identifiedBy = this.value;
       app.validateId();
     });
-    document.getElementById('identified-col').addEventListener('change', function () {
+    document.getElementById('identified-col').addEventListener('change', function() {
       app.identifiedCol = this.value;
       app.validateId();
     });
     document.getElementById('value-type').addEventListener('change', () => {
       console.log('value type changed');
     });
-    document.getElementById('value-col').addEventListener('change', function () {
+    document.getElementById('value-col').addEventListener('change', function() {
       app.valueColListener(this);
     });
-    document.getElementById('data-scale').addEventListener('change', function () {
+    document.getElementById('data-scale').addEventListener('change', function() {
       app.dataScaleListener(this);
     });
   },
@@ -311,7 +313,7 @@ var app = {
   },
 
   wrap(text, width) {
-    text.each(function () {
+    text.each(function() {
       let text = d3.select(this),
         words = text.text().split(/\s+/).reverse(),
         word,
@@ -447,6 +449,6 @@ var app = {
   },
 };
 
-(function () {
+(function() {
   app.init(app);
 }());
