@@ -4,10 +4,19 @@
   "description": "Makes maps about states from data",
   "author": "Tom VanAntwerp",
   "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-es2015-native-modules": "^6.9.4",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-sass": "^2.1.1",
     "gulp-util": "^3.0.7",
-    "gulp-webserver": "^0.9.1"
+    "gulp-webserver": "^0.9.1",
+    "webpack": "^2.2.1"
+  },
+  "dependencies": {
+    "chroma-js": "^1.2.2",
+    "d3": "^4.7.0",
+    "topojson": "^2.2.0"
   }
 }
