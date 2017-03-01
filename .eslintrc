@@ -6,6 +6,7 @@
   },
   "extends": "airbnb",
   "rules": {
-    "no-console": "warn"
+    "no-console": 1,
+    "space-before-function-paren": 0
   }
 }
