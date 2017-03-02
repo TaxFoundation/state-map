@@ -96,7 +96,8 @@ const app = {
       .await((error, data) => {
         map.selectAll('path')
           .data(topojson.feature(data, data.objects.states).features)
-        .enter().append('path')
+          .enter()
+          .append('path')
           .attr('class', d => `state state${d.id}`)
           .attr('d', path)
           .attr('fill', app.noDataColor)
@@ -105,7 +106,8 @@ const app = {
 
         labels.selectAll('g')
           .data(topojson.feature(data, data.objects.states).features)
-        .enter().append('g')
+          .enter()
+          .append('g')
           .attr('class', d => `labels labels${d.id}`)
           .attr('transform', (d) => {
             const centroid = path.centroid(d);
@@ -124,7 +126,7 @@ const app = {
           .attr('text-anchor', 'middle')
           .attr('style', 'font-family: \'Lato\', Arial, sans-serif; font-size: 14px; font-style: normal; font-weight:700')
           .text((d) => {
-            const state = STATES.filter(s => s.id == d.id);
+            const state = STATES.filter(s => s.id === +d.id);
 
             if (state[0]) {
               return state[0].abbr;
@@ -134,7 +136,6 @@ const app = {
 
         let sideRects = 0;
         offsets.SIDE_RECT_STATES.forEach((s) => {
-          console.log(s);
           map.append('rect')
             .attr('x', app.sideRectXStart)
             .attr('y', app.sideRectYStart + (app.sideRectOffset * sideRects))
@@ -144,11 +145,9 @@ const app = {
             .attr('class', () => `state state${s}`);
 
           d3.select(`.labels${s}`)
-            .attr('transform', s => `translate(${
-               app.sideRectXStart - 6
-               },${
-               (app.sideRectYStart + 11) + (app.sideRectOffset * sideRects)
-               })`);
+            .attr('transform', () => `translate(${app.sideRectXStart - 6},
+              ${(app.sideRectYStart + 11) + (app.sideRectOffset * sideRects)})`
+            );
 
           d3.select(`.abbr${s}`)
             .attr('text-anchor', 'end');
@@ -171,7 +170,6 @@ const app = {
     });
 
     cleanData.forEach((d) => {
-      console.log(d.value, app.divergentColor(d.value));
       d3.selectAll(`.state${d.id}`)
         .attr('fill', app.sequenceColor(d.value));
     });
@@ -337,7 +335,7 @@ const app = {
       app.data.forEach((d) => {
         let id = d[app.identifiedCol];
         if (!isNaN(id)) id = +id;
-        let match = STATES
+        const match = STATES
           .map(s => s[app.identifiedBy])
           .find(s => s === id);
         if (match !== undefined) {

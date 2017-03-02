@@ -21196,7 +21196,7 @@ var app = {
         return 'abbr' + d.id;
       }).attr('text-anchor', 'middle').attr('style', 'font-family: \'Lato\', Arial, sans-serif; font-size: 14px; font-style: normal; font-weight:700').text(function (d) {
         var state = __WEBPACK_IMPORTED_MODULE_3__stateList_js__["a" /* default */].filter(function (s) {
-          return s.id == d.id;
+          return s.id === +d.id;
         });
 
         if (state[0]) {
@@ -21207,13 +21207,12 @@ var app = {
 
       var sideRects = 0;
       __WEBPACK_IMPORTED_MODULE_4__offsets_js__["a" /* default */].SIDE_RECT_STATES.forEach(function (s) {
-        console.log(s);
         map.append('rect').attr('x', app.sideRectXStart).attr('y', app.sideRectYStart + app.sideRectOffset * sideRects).attr('width', 12).attr('height', 12).attr('fill', app.noDataColor).attr('class', function () {
           return 'state state' + s;
         });
 
-        __WEBPACK_IMPORTED_MODULE_0_d3__["select"]('.labels' + s).attr('transform', function (s) {
-          return 'translate(' + (app.sideRectXStart - 6) + ',' + (app.sideRectYStart + 11 + app.sideRectOffset * sideRects) + ')';
+        __WEBPACK_IMPORTED_MODULE_0_d3__["select"]('.labels' + s).attr('transform', function () {
+          return 'translate(' + (app.sideRectXStart - 6) + ',\n              ' + (app.sideRectYStart + 11 + app.sideRectOffset * sideRects) + ')';
         });
 
         __WEBPACK_IMPORTED_MODULE_0_d3__["select"]('.abbr' + s).attr('text-anchor', 'end');
@@ -21235,7 +21234,6 @@ var app = {
     });
 
     cleanData.forEach(function (d) {
-      console.log(d.value, app.divergentColor(d.value));
       __WEBPACK_IMPORTED_MODULE_0_d3__["selectAll"]('.state' + d.id).attr('fill', app.sequenceColor(d.value));
     });
   },
