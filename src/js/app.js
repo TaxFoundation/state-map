@@ -1,4 +1,6 @@
-/* globals d3 chroma */
+import d3 from 'd3';
+import * as chroma from 'chroma-js';
+import topojson from 'topojson';
 import STATES from './stateList.js';
 import offsets from './offsets.js';
 
@@ -131,7 +133,7 @@ const app = {
           });
 
         let sideRects = 0;
-        offets.SIDE_RECT_STATES.forEach((s) => {
+        offsets.SIDE_RECT_STATES.forEach((s) => {
           console.log(s);
           map.append('rect')
             .attr('x', app.sideRectXStart)
