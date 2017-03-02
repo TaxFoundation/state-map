@@ -251,12 +251,12 @@ const app = {
         words = theText.text()
           .split(/\s+/)
           .reverse(),
-        lineHeight = 16;
+        lineHeight = 16,
+        y = theText.attr('y'),
+        dy = parseFloat(theText.attr('dy')) || 0;
       let word = '',
         line = [],
         lineNumber = 0,
-        y = theText.attr('y'),
-        dy = parseFloat(theText.attr('dy')) || 0,
         tspan = theText.text(null).append('tspan')
           .attr('x', 0)
           .attr('y', y)
@@ -360,12 +360,12 @@ const app = {
     }
   },
 
-  sequenceColor(value, theDomain, interpolation, steps) {
+  sequenceColor(value, domain, interpolation, steps) {
     // value is the datapoint to be given a color
     // theDomain is an array with, at minimum, the min and max of the observations
     // interpolation is an array of colors to be used in the scale
     // steps is the number of steps to be used in creating the color breaks
-    var theDomain = theDomain || [app.summaryStats.min, app.summaryStats.max];
+    let theDomain = domain || [app.summaryStats.min, app.summaryStats.max];
     if (app.reverseSequence) {
       theDomain = [app.summaryStats.max, app.summaryStats.min];
     }
@@ -378,8 +378,8 @@ const app = {
     return scale(value).hex();
   },
 
-  divergentColor(value, theDomain, interpolation) {
-    var theDomain = theDomain || [app.summaryStats.min, app.summaryStats.mid, app.summaryStats.max];
+  divergentColor(value, domain, interpolation) {
+    let theDomain = domain || [app.summaryStats.min, app.summaryStats.mid, app.summaryStats.max];
     if (app.reverseSequence) {
       theDomain = [app.summaryStats.max, app.summaryStats.mid, app.summaryStats.min];
     }
