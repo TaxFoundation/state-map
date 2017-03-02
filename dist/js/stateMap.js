@@ -21259,8 +21259,6 @@ var app = {
     });
   },
   setupListeners: function setupListeners() {
-    var _this = this;
-
     document.getElementById('title-text').addEventListener('input', function (event) {
       __WEBPACK_IMPORTED_MODULE_0_d3__["select"]('.title').text(event.target.value);
     });
@@ -21284,11 +21282,11 @@ var app = {
     document.getElementById('value-type').addEventListener('change', function () {
       console.log('value type changed');
     });
-    document.getElementById('value-col').addEventListener('change', function () {
-      app.valueColListener(_this);
+    document.getElementById('value-col').addEventListener('change', function (event) {
+      app.valueColListener(event.target);
     });
-    document.getElementById('data-scale').addEventListener('change', function () {
-      app.dataScaleListener(_this);
+    document.getElementById('data-scale').addEventListener('change', function (event) {
+      app.dataScaleListener(event.target);
     });
   },
   scaleSelect: function scaleSelect(scaleType) {

@@ -185,11 +185,11 @@ const app = {
     document.getElementById('value-type').addEventListener('change', () => {
       console.log('value type changed');
     });
-    document.getElementById('value-col').addEventListener('change', () => {
-      app.valueColListener(this);
+    document.getElementById('value-col').addEventListener('change', (event) => {
+      app.valueColListener(event.target);
     });
-    document.getElementById('data-scale').addEventListener('change', () => {
-      app.dataScaleListener(this);
+    document.getElementById('data-scale').addEventListener('change', (event) => {
+      app.dataScaleListener(event.target);
     });
   },
 
