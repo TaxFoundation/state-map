@@ -21304,30 +21304,25 @@ var app = {
     });
   },
   wrap: function wrap(text, width) {
-    var _this2 = this;
-
-    console.log(text);
-    text.each(function () {
-      var theText = __WEBPACK_IMPORTED_MODULE_0_d3__["select"](_this2),
-          words = theText.text().split(/\s+/).reverse(),
-          lineHeight = 16,
-          y = theText.attr('y'),
-          dy = parseFloat(theText.attr('dy')) || 0;
-      var word = '',
-          line = [],
-          lineNumber = 0,
-          tspan = theText.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy);
-      while (word = words.pop()) {
-        line.push(word);
+    var theText = text,
+        words = theText.text().split(/\s+/).reverse(),
+        lineHeight = 16,
+        y = theText.attr('y'),
+        dy = parseFloat(theText.attr('dy')) || 0;
+    var word = '',
+        line = [],
+        lineNumber = 0,
+        tspan = theText.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy);
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(' '));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
         tspan.text(line.join(' '));
-        if (tspan.node().getComputedTextLength() > width) {
-          line.pop();
-          tspan.text(line.join(' '));
-          line = [word];
-          tspan = theText.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy).text(word);
-        }
+        line = [word];
+        tspan = theText.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy).text(word);
       }
-    });
+    }
   },
   readFile: function readFile(file, callback) {
     var reader = new FileReader();

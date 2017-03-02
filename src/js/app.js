@@ -246,37 +246,34 @@ const app = {
   },
 
   wrap(text, width) {
-    console.log(text);
-    text.each(() => {
-      const theText = d3.select(this),
-        words = theText.text()
-          .split(/\s+/)
-          .reverse(),
-        lineHeight = 16,
-        y = theText.attr('y'),
-        dy = parseFloat(theText.attr('dy')) || 0;
-      let word = '',
-        line = [],
-        lineNumber = 0,
-        tspan = theText.text(null).append('tspan')
+    const theText = text,
+      words = theText.text()
+        .split(/\s+/)
+        .reverse(),
+      lineHeight = 16,
+      y = theText.attr('y'),
+      dy = parseFloat(theText.attr('dy')) || 0;
+    let word = '',
+      line = [],
+      lineNumber = 0,
+      tspan = theText.text(null).append('tspan')
+        .attr('x', 0)
+        .attr('y', y)
+        .attr('dy', dy);
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(' '));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(' '));
+        line = [word];
+        tspan = theText.append('tspan')
           .attr('x', 0)
           .attr('y', y)
-          .attr('dy', dy);
-      while (word = words.pop()) {
-        line.push(word);
-        tspan.text(line.join(' '));
-        if (tspan.node().getComputedTextLength() > width) {
-          line.pop();
-          tspan.text(line.join(' '));
-          line = [word];
-          tspan = theText.append('tspan')
-            .attr('x', 0)
-            .attr('y', y)
-            .attr('dy', ++lineNumber * lineHeight + dy)
-            .text(word);
-        }
+          .attr('dy', ++lineNumber * lineHeight + dy)
+          .text(word);
       }
-    });
+    }
   },
 
   readFile(file, callback) {
