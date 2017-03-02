@@ -189,15 +189,15 @@ const app = {
         .text(this.value)
         .call(app.wrap, 550);
     });
-    document.getElementById('data-file').addEventListener('change', () => {
-      app.readFile(this.files[0], app.parseFile);
+    document.getElementById('data-file').addEventListener('change', (event) => {
+      app.readFile(event.target.files[0], app.parseFile);
     });
-    document.getElementById('identified-by').addEventListener('change', () => {
-      app.identifiedBy = this.value;
+    document.getElementById('identified-by').addEventListener('change', (event) => {
+      app.identifiedBy = event.target.value;
       app.validateId();
     });
-    document.getElementById('identified-col').addEventListener('change', () => {
-      app.identifiedCol = this.value;
+    document.getElementById('identified-col').addEventListener('change', (event) => {
+      app.identifiedCol = event.target.value;
       app.validateId();
     });
     document.getElementById('value-type').addEventListener('change', () => {
@@ -337,8 +337,9 @@ const app = {
     const invalid = [];
     if (app.identifiedCol !== '' && app.identifiedCol !== 'default') {
       app.data.forEach((d) => {
-        const id = d[app.identifiedCol];
-        const match = STATES
+        let id = d[app.identifiedCol];
+        if (!isNaN(id)) id = +id;
+        let match = STATES
           .map(s => s[app.identifiedBy])
           .find(s => s === id);
         if (match !== undefined) {
@@ -394,5 +395,5 @@ const app = {
 };
 
 (() => {
-  app.init(app);
+  app.init();
 })();
