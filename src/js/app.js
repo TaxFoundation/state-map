@@ -1,24 +1,6 @@
 /* globals d3 chroma */
 import STATES from './stateList.js';
-
-const TOP_RECT_STATES = [33, 50];
-const SIDE_RECT_STATES = [9, 10, 11, 24, 25, 34, 44, 54];
-const LABEL_OFFSETS = {
-  2: { x: 5, y: -10 },
-  12: { x: 25, y: 20 },
-  13: { x: 5, y: 5 },
-  15: { x: 0, y: 0 },
-  17: { x: -5, y: -10 },
-  22: { x: -10, y: 0 },
-  23: { x: 0, y: -5 },
-  26: { x: 15, y: 22 },
-  27: { x: 0, y: -20 },
-  36: { x: 0, y: 0 },
-  37: { x: 0, y: 0 },
-  45: { x: 0, y: 0 },
-  51: { x: 0, y: 0 },
-  55: { x: -3, y: -10 },
-};
+import offsets from './offsets.js';
 
 const colors = {
   sequential: [
@@ -126,10 +108,10 @@ const app = {
           .attr('transform', (d) => {
             const centroid = path.centroid(d);
             if (centroid[0] && centroid[1]) {
-              if (LABEL_OFFSETS[d.id]) {
+              if (offsets.LABEL_OFFSETS[d.id]) {
                 return `translate(${
-                 centroid[0] + LABEL_OFFSETS[d.id].x},${
-                 centroid[1] + LABEL_OFFSETS[d.id].y})`;
+                 centroid[0] + offsets.LABEL_OFFSETS[d.id].x},${
+                 centroid[1] + offsets.LABEL_OFFSETS[d.id].y})`;
               }
               return `translate(${centroid[0]},${centroid[1]})`;
             }
@@ -149,7 +131,7 @@ const app = {
           });
 
         let sideRects = 0;
-        SIDE_RECT_STATES.forEach((s) => {
+        offets.SIDE_RECT_STATES.forEach((s) => {
           console.log(s);
           map.append('rect')
             .attr('x', app.sideRectXStart)
