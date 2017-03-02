@@ -1,22 +1,8 @@
 import * as d3 from 'd3';
-import * as chroma from 'chroma-js';
 import * as topojson from 'topojson';
 import STATES from './stateList.js';
 import offsets from './offsets.js';
-
-const colors = {
-  sequential: [
-    {},
-  ],
-
-  divergent: [
-    {},
-  ],
-
-  qualitative: [
-    {},
-  ],
-};
+import colors from './colors.js';
 
 const app = {
   init() {
@@ -145,9 +131,7 @@ const app = {
             .attr('class', () => `state state${s}`);
 
           d3.select(`.labels${s}`)
-            .attr('transform', () => `translate(${app.sideRectXStart - 6},
-              ${(app.sideRectYStart + 11) + (app.sideRectOffset * sideRects)})`
-            );
+            .attr('transform', () => `translate(${app.sideRectXStart - 6},${(app.sideRectYStart + 11) + (app.sideRectOffset * sideRects)})`);
 
           d3.select(`.abbr${s}`)
             .attr('text-anchor', 'end');
@@ -355,38 +339,6 @@ const app = {
           .text('All IDs validated.');
       }
     }
-  },
-
-  sequenceColor(value, domain, interpolation, steps) {
-    // value is the datapoint to be given a color
-    // theDomain is an array with, at minimum, the min and max of the observations
-    // interpolation is an array of colors to be used in the scale
-    // steps is the number of steps to be used in creating the color breaks
-    let theDomain = domain || [app.summaryStats.min, app.summaryStats.max];
-    if (app.reverseSequence) {
-      theDomain = [app.summaryStats.max, app.summaryStats.min];
-    }
-    const theInterpolation = interpolation || app.interpolator;
-
-    const scale = chroma.scale(theInterpolation)
-      .domain(theDomain)
-      .classes(steps);
-
-    return scale(value).hex();
-  },
-
-  divergentColor(value, domain, interpolation) {
-    let theDomain = domain || [app.summaryStats.min, app.summaryStats.mid, app.summaryStats.max];
-    if (app.reverseSequence) {
-      theDomain = [app.summaryStats.max, app.summaryStats.mid, app.summaryStats.min];
-    }
-    const theInterpolation = interpolation || app.interpolator;
-    console.log(theInterpolation);
-
-    const scale = d3.scaleSequential()
-      .domain(theDomain)
-      .clamp(true);
-    return scale(value);
   },
 };
 
