@@ -1,6 +1,6 @@
-import d3 from 'd3';
+import * as d3 from 'd3';
 import * as chroma from 'chroma-js';
-import topojson from 'topojson';
+import * as topojson from 'topojson';
 import STATES from './stateList.js';
 import offsets from './offsets.js';
 
