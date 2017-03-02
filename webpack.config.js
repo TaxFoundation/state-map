@@ -24,11 +24,11 @@ module.exports = {
   },
   plugins: [
     // uglify
-    new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false },
-      output: { comments: false },
-      sourceMap: true,
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: { warnings: false },
+    //   output: { comments: false },
+    //   sourceMap: true,
+    // }),
     // environment
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify(nodeEnv) },
