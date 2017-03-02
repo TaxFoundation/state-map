@@ -2,6 +2,9 @@
   "name": "state-map",
   "version": "1.0.0",
   "description": "Makes maps about states from data",
+  "scripts": {
+    "build": "webpack --progress --watch"
+  },
   "author": "Tom VanAntwerp",
   "devDependencies": {
     "babel-core": "^6.23.1",
