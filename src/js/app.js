@@ -178,15 +178,15 @@ const app = {
   },
 
   setupListeners() {
-    document.getElementById('title-text').addEventListener('input', () => {
-      d3.select('.title').text(this.value);
+    document.getElementById('title-text').addEventListener('input', (event) => {
+      d3.select('.title').text(event.target.value);
     });
-    document.getElementById('subtitle-text').addEventListener('input', () => {
-      d3.select('.subtitle').text(this.value);
+    document.getElementById('subtitle-text').addEventListener('input', (event) => {
+      d3.select('.subtitle').text(event.target.value);
     });
-    document.getElementById('notes-text').addEventListener('input', () => {
+    document.getElementById('notes-text').addEventListener('input', (event) => {
       d3.select('.note')
-        .text(this.value)
+        .text(event.target.value)
         .call(app.wrap, 550);
     });
     document.getElementById('data-file').addEventListener('change', (event) => {
@@ -246,6 +246,7 @@ const app = {
   },
 
   wrap(text, width) {
+    console.log(text);
     text.each(() => {
       const theText = d3.select(this),
         words = theText.text()

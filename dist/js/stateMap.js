@@ -21242,14 +21242,14 @@ var app = {
   setupListeners: function setupListeners() {
     var _this = this;
 
-    document.getElementById('title-text').addEventListener('input', function () {
-      __WEBPACK_IMPORTED_MODULE_0_d3__["select"]('.title').text(_this.value);
+    document.getElementById('title-text').addEventListener('input', function (event) {
+      __WEBPACK_IMPORTED_MODULE_0_d3__["select"]('.title').text(event.target.value);
     });
-    document.getElementById('subtitle-text').addEventListener('input', function () {
-      __WEBPACK_IMPORTED_MODULE_0_d3__["select"]('.subtitle').text(_this.value);
+    document.getElementById('subtitle-text').addEventListener('input', function (event) {
+      __WEBPACK_IMPORTED_MODULE_0_d3__["select"]('.subtitle').text(event.target.value);
     });
-    document.getElementById('notes-text').addEventListener('input', function () {
-      __WEBPACK_IMPORTED_MODULE_0_d3__["select"]('.note').text(_this.value).call(app.wrap, 550);
+    document.getElementById('notes-text').addEventListener('input', function (event) {
+      __WEBPACK_IMPORTED_MODULE_0_d3__["select"]('.note').text(event.target.value).call(app.wrap, 550);
     });
     document.getElementById('data-file').addEventListener('change', function (event) {
       app.readFile(event.target.files[0], app.parseFile);
@@ -21306,6 +21306,7 @@ var app = {
   wrap: function wrap(text, width) {
     var _this2 = this;
 
+    console.log(text);
     text.each(function () {
       var theText = __WEBPACK_IMPORTED_MODULE_0_d3__["select"](_this2),
           words = theText.text().split(/\s+/).reverse(),
